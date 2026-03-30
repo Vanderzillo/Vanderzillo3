@@ -3,36 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena - Edição Livre</title>
+    <title>Termo Arena Vander - OFICIAL</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
-        
         #login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; }
         input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; text-transform: uppercase; }
         .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-        header { width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        header { width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.1); }
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 5px; }
         .modes { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
         .m-btn { background: rgba(0,0,0,0.2); border: 1px solid white; color: white; padding: 6px 15px; border-radius: 5px; font-size: 0.8rem; }
         .active { background: white; color: var(--bg); font-weight: bold; }
-
         #container { flex: 1; display: grid; gap: 10px; padding: 15px; justify-content: center; align-content: center; width: 100%; }
         .grid { display: grid; gap: 5px; }
         .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; cursor: pointer; }
-        .selected { border: 4px solid white !important; }
-        
+        .selected { border: 3px solid white !important; transform: scale(1.05); }
         .dueto-layout { grid-template-columns: 1fr 1fr; max-width: 95vw; }
         .dueto-layout .tile { width: clamp(35px, 9vw, 45px); font-size: 1.5rem; }
-
         .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.2); }
         .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
         .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; }
         .key.wide { flex: 1.5; font-size: 0.7rem; }
-
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
         .a { background: var(--absent) !important; border: none; }
@@ -71,14 +65,8 @@
     </div>
 
     <script>
-        let DICIONARIO_COMPLETO = [];
-        let PALAVRAS_SORTEIO = ["SAGAZ", "TERMO", "LUCRO", "JUROS", "BOLSA", "RENDA", "MESAS", "ARENA", "VALOR", "CASA", "ATIVO", "SORTE", "BANCO", "COFRE", "VIVER", "PRATO", "TEMPO", "FORTE", "MESAS", "CASAS", "LIVRO", "NOITE", "BRASIL", "PIANO", "FRUTA"];
-
-        fetch('https://raw.githubusercontent.com/pythonprobr/palavras/master/palavras.txt')
-            .then(res => res.text())
-            .then(data => {
-                DICIONARIO_COMPLETO = data.split('\n').map(p => p.trim().toUpperCase()).filter(p => p.length === 5);
-            });
+        // LISTA GIGANTE INTEGRADA (ACEITA PLURAIS E VERBOS)
+        const DICIONARIO = ["SAGAZ", "TERMO", "MEXER", "NOBRE", "SENSO", "AFETO", "ALGOZ", "ETICA", "VIGOR", "FAZER", "FATO", "IDEIA", "PODER", "MORAL", "MUITO", "HONRA", "JUSTO", "SOBRE", "DORME", "INDIO", "FOCO", "SONHO", "RAZAO", "QUERER", "ETNIA", "ICONE", "MUNDO", "TEMPO", "PLENO", "CERTO", "VULGO", "DIZER", "BANAL", "FORTE", "PESSOA", "CAUSA", "ASSIM", "PONTO", "ORDEM", "BELO", "LUGAR", "VALOR", "GRACA", "FELIZ", "MESMO", "VIVER", "PLANO", "ATIVO", "ARENA", "SORTE", "LETRA", "BRASIL", "PEDRA", "CHAVE", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO", "PORTA", "MESAS", "GATOS", "FESTA", "FOGO", "AGUA", "TERRA", "VENTO", "MUDAR", "POETA", "ROUPA", "FALTA", "DENTE", "PROVA", "GRITO", "CANTO", "MENTE", "CORPO", "LIVRO", "NOITE", "VISTA", "SOLAR", "LUNAR", "CAMPO", "CHAMA", "BRISA", "MARCO", "POSTO", "TREM", "CALOR", "FRIO", "PASSO", "BATER", "CAIXA", "BANCO", "COFRE", "LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "SENDO", "ESTAR", "HAVER", "POIS", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "MUITO", "VAGO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "FORA", "DENTRO", "CASA", "VIDA", "LEVAR", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "FRENTE", "ATRAS", "LONGE", "PERTO", "OURO", "PRATA", "BRONZE", "COPA", "JOGO", "DADO", "META", "ALVO", "FIM", "INICIO", "MEIO", "ANOS", "MESES", "DIA", "HORA", "MINUTO", "AGORA", "ONDE", "COMO", "QUEM", "QUAL", "POUCO", "GRANDE", "PEQUENO", "BONITO", "FEIO", "DOIDO", "SABIO", "SABER", "PENSAR", "AMAR", "ODIO", "PAZ", "GUERRA", "MAR", "RIO", "FLUXO", "AREA", "FORÇA", "PESO", "MASSA", "LUZ", "SOM", "VOZ", "CARA", "DOR", "RISO", "PEITO", "BRAÇO", "PERNA", "DEDO", "UNHA", "CABO", "COLO", "COURO", "PELO", "PELE", "SANGUE", "OSSOS", "CARNE", "NERVO", "VEIA", "FLOR", "FRUTA", "CAFE", "DOCE", "SAL", "MEL", "VINHO", "LEITE", "SUCO", "BOLO", "OVO", "AVE", "BOI", "VACA", "GATO", "CÃO", "RATO", "LOBO", "LEÃO", "URSO", "COBRA", "SAPO", "ONDAS", "PRAIA", "AREIA", "SOL", "LUA", "ESTRELA", "NUVEM", "CHUVA", "NEVE", "GELO", "FUMAÇA", "CINZA", "COBRE", "AÇO", "MADEIRA", "PAPEL", "TELA", "COR", "VERDE", "AZUL", "ROXO", "ROSA", "AMARELO", "BRANCO", "PRETO", "CINZA", "MARROM", "CORES", "MUSICA", "ARPA", "VIOLA", "PIANO", "TAMBOR", "RITMO", "DANÇA", "VOLTA", "GIRO", "QUEDA", "SUBIDA", "DESCIDA", "ALI", "MAIS", "MENOS", "IGUAL", "DIFER", "MANHÃ", "TARDE", "TENIS", "MEIAS", "VESTE", "FORMA", "TIPO", "CLUBE", "RADIO", "FILME", "CENA", "ATO", "ATOR", "TEMA", "FOTO", "MAPA", "BOLA", "GOL", "TIME", "REDE", "CORTE", "BASE", "TOPO", "FASE", "TESTE", "OBRA", "ARTE", "VAGA", "AVISO", "SINAL", "PESA", "MEDE", "CONTA", "SOMA", "LISTA", "TEXTO", "LINK", "SITE", "BLOG", "APP", "WEB", "CHAT", "BOT", "IA", "TELAS", "PIXEL", "DADOS", "BYTE", "CHIP", "FIO", "PLAY", "STOP", "MUDO", "CRIAR", "ABRIR", "SAIR", "IR", "VOLTA", "FICA", "TRAZ", "LEVA", "COME", "BEBE", "FALA", "OUVE", "OLHA", "PEGA", "SOLTA", "SOBE", "DESCE", "PARA", "ANDA", "CORRE", "PULA", "VIRA", "BATE", "CORTA", "FIXA", "LIGA", "FURA", "COLA", "SOPRA", "PISA", "REZA", "JURO", "MESA", "CASAS", "MESAS", "PRATO", "SOPAS", "GATOS", "DADOS", "VOTOS", "MODOS", "REDES", "TEMAS", "MAPAS", "BOLAS", "GOLS", "PIÕES", "REAIS", "VALES", "BONUS", "COPAS", "JOGOS", "FASES", "METAS", "ALVOS", "FINS", "MEIOS", "ANOS", "MESES", "DIAS", "HORAS", "MINAS", "CARAS", "DORES", "RISOS", "PELOS", "PELES", "VEIAS", "FLORES", "FRUTAS", "CAFÉS", "DOCES", "SALES", "MELES", "BOLOS", "OVOS", "AVES", "BOIS", "VACAS", "RATOS", "LOBOS", "LEÕES", "URSOS", "SAPOS", "MARÉS", "CAIS", "RIOS", "LAGO", "LAMA", "AREIA", "SOLS", "LUAS", "CÉUS", "GELOS", "AÇOS", "TELA", "TELAS", "CORES", "ARPAS", "ATOS", "VAGAS", "SOMA", "SOMAS", "SITES", "BLOGS", "APPS", "CHIPS", "FIOS", "LUZES", "SOM", "SONS", "VOZES", "IRAS", "ATÉ", "PÉS", "MÃOS", "BOCAS", "UNHAS", "DEDOS", "PEITO", "BRAÇO", "PERNA", "COURO", "NERVO", "VEIA", "SANGUE"];
 
         let RESPOSTAS = [], fimGrids = [], totalGrids = 1, maxTents = 6, row = 0, col = 0, chute = ["", "", "", "", ""];
 
@@ -101,7 +89,7 @@
             row = 0; col = 0; chute = ["", "", "", "", ""];
             RESPOSTAS = []; fimGrids = new Array(totalGrids).fill(false);
             for(let i=0; i<totalGrids; i++) {
-                let p = PALAVRAS_SORTEIO[Math.floor(Math.random()*PALAVRAS_SORTEIO.length)];
+                let p = DICIONARIO[Math.floor(Math.random()*DICIONARIO.length)];
                 RESPOSTAS.push(p.toUpperCase());
             }
             const cont = document.getElementById('container');
@@ -116,14 +104,7 @@
                 for(let i=0; i<maxTents*5; i++) {
                     let t = document.createElement('div'); 
                     t.className = "tile"; t.id = `g${g}-t${i}`;
-                    // LIBERDADE DE CLIQUE:
-                    t.onclick = () => {
-                        let tileRow = Math.floor(i / 5);
-                        if(tileRow === row) {
-                            col = i % 5;
-                            updateUI();
-                        }
-                    };
+                    t.onclick = () => { if(Math.floor(i/5) === row) { col = i%5; updateUI(); } };
                     d.appendChild(t);
                 }
                 cont.appendChild(d);
@@ -142,7 +123,7 @@
             r.forEach(k => {
                 let b = document.createElement('button');
                 b.className = (k === 'ENTER' || k === 'DEL') ? 'key wide' : 'key';
-                b.innerText = k === 'DEL' ? '⌫' : k;
+                b.id = `key-${k}`; b.innerText = k === 'DEL' ? '⌫' : k;
                 b.onclick = () => clicarTecla(k);
                 rowEl.appendChild(b);
             });
@@ -157,7 +138,7 @@
             } else if(l === 'ENTER') {
                 let p = chute.join("");
                 if(p.length < 5 || chute.includes("")) return showToast("FALTAM LETRAS");
-                if(DICIONARIO_COMPLETO.length > 0 && !DICIONARIO_COMPLETO.includes(p)) return showToast("PALAVRA INVÁLIDA");
+                if(!DICIONARIO.includes(p)) return showToast("PALAVRA INVÁLIDA");
                 processarEnvio();
             } else {
                 chute[col] = l;
@@ -176,7 +157,7 @@
                     let t = document.getElementById(`g${g}-t${row*5+i}`);
                     if(s[i] === r[i]) {
                         t.classList.add('c'); tempR[i] = null; acertos++;
-                        document.getElementById(`key-${s[i]}`)?.classList.add('key-correct');
+                        document.getElementById(`key-${s[i]}`).classList.add('key-correct');
                     }
                 }
                 for(let i=0; i<5; i++) {
@@ -184,10 +165,12 @@
                     if(t.classList.contains('c')) continue;
                     if(tempR.includes(s[i])) {
                         t.classList.add('p'); tempR[tempR.indexOf(s[i])] = null;
-                        document.getElementById(`key-${s[i]}`)?.classList.add('key-present');
+                        if(!document.getElementById(`key-${s[i]}`).classList.contains('key-correct'))
+                            document.getElementById(`key-${s[i]}`).classList.add('key-present');
                     } else {
                         t.classList.add('a');
-                        document.getElementById(`key-${s[i]}`)?.classList.add('key-absent');
+                        if(!document.getElementById(`key-${s[i]}`).classList.contains('key-correct'))
+                            document.getElementById(`key-${s[i]}`).classList.add('key-absent');
                     }
                 }
                 if(acertos === 5) { fimGrids[g] = true; document.getElementById(`grid-${g}`).classList.add('done'); }
@@ -218,3 +201,4 @@
     </script>
 </body>
 </html>
+

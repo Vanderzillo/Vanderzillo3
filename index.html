@@ -3,203 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena Vander</title>
+    <title>Termo Arena - Vander Edition</title>
     <style>
-        :root { --bg: #121213; --tile: #3a3a3c; --correct: #538d4e; --present: #b59f3b; --absent: #3a3a3c; --wrong-key: #781919; --purple: #a855f7; }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root { --bg: #121213; --tile: #3a3a3c; --correct: #538d4e; --present: #b59f3b; --absent: #3a3a3c; --purple: #a855f7; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body { background: var(--bg); color: white; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
-        
-        header { padding: 10px; width: 100%; display: flex; flex-direction: column; align-items: center; background: #1a1a1b; border-bottom: 1px solid #333; }
-        .modes { display: flex; gap: 10px; margin-bottom: 5px; }
-        .m-btn { background: #333; border: 1px solid #444; color: white; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-        .active { background: var(--purple); border: none; }
-        
-        #container { display: grid; gap: 8px; padding: 10px; width: 100%; flex: 1; justify-content: center; align-content: center; overflow-y: auto; }
-        .grid { display: grid; gap: 3px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 6px; }
-        .tile { border: 2px solid var(--tile); display: flex; align-items: center; justify-content: center; font-weight: bold; text-transform: uppercase; border-radius: 4px; font-size: 1.1rem; aspect-ratio: 1/1; }
-        .selected { border: 2.5px solid white !important; }
-        
-        /* Layouts conforme o modo */
-        .solo-l { grid-template-columns: 1fr; max-width: 320px; }
-        .dueto-l { grid-template-columns: 1fr 1fr; max-width: 650px; }
-        .quarteto-l { grid-template-columns: 1fr 1fr; max-width: 650px; }
-        .quarteto-l .tile { font-size: 0.9rem; }
 
-        .keyboard { width: 100%; background: #1a1a1b; padding: 10px 0; border-top: 1px solid #333; }
-        .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 6px; padding: 0 5px; }
-        .key { background: #818384; border: none; color: white; padding: 18px 0; border-radius: 4px; font-weight: bold; font-size: 0.9rem; flex: 1; min-width: 30px; }
-        .key.wide { flex: 1.6; background: #565758; }
+        /* Tela de Login Blindada */
+        #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+        .login-card { background: #1a1a1b; padding: 30px; border-radius: 15px; border: 1px solid #333; width: 100%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .login-card h2 { margin-bottom: 20px; color: var(--purple); font-size: 1.5rem; }
+        input { background: #121213; border: 1px solid #333; color: white; padding: 12px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .btn-entrar { background: var(--purple); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Header e Modos */
+        header { padding: 8px; width: 100%; display: flex; justify-content: space-around; align-items: center; background: #1a1a1b; font-size: 0.8rem; }
+        .m-btn { background: #333; border: 1px solid #444; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.65rem; }
+        .m-btn.active { background: var(--correct); border: none; }
+
+        /* Quadros */
+        #game-container { display: grid; gap: 8px; padding: 10px; width: 100%; flex: 1; justify-content: center; align-content: center; }
+        .grid { display: grid; gap: 3px; aspect-ratio: 5/6; }
+        .tile { border: 1.5px solid var(--tile); display: flex; align-items: center; justify-content: center; font-weight: bold; text-transform: uppercase; border-radius: 3px; font-size: 1.2rem; }
+
+        .solo .grid { height: 35vh; grid-template-columns: repeat(5, 1fr); }
+        .dueto { grid-template-columns: 1fr 1fr; } .dueto .grid { height: 26vh; }
+        .quarteto { grid-template-columns: 1fr 1fr; } .quarteto .grid { height: 18vh; }
+
+        /* Teclado que subiu */
+        .keyboard { width: 100%; background: #1a1a1b; padding: 5px 2px; border-top: 1px solid #333; }
+        .kb-row { display: flex; justify-content: center; gap: 3px; margin-bottom: 4px; }
+        .key { background: #818384; border: none; color: white; padding: 15px 0; border-radius: 4px; font-weight: bold; font-size: 0.8rem; flex: 1; }
+        .key.wide { flex: 1.8; background: #565758; }
+
+        /* Ranking no Rodapé */
+        .ranking { width: 100%; background: #000; padding: 8px; font-size: 0.7rem; text-align: center; color: #ffd700; }
         
+        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 8px; z-index: 6000; font-weight: bold; display: none; }
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
         .a { background: var(--absent) !important; border: none; }
-        .key-correct { background: var(--correct) !important; }
-        .key-present { background: var(--present) !important; }
-        .key-absent { background: var(--wrong-key) !important; opacity: 0.7; }
-        .done { opacity: 0.6; filter: brightness(0.8); }
-        #toast { position: fixed; top: 15%; background: white; color: black; padding: 12px 25px; border-radius: 8px; display: none; z-index: 9999; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .done { opacity: 0.5; filter: grayscale(1); }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="modes">
-            <button id="b1" class="m-btn active" onclick="trocarModo(1, 6, 'b1')">SOLO</button>
-            <button id="b2" class="m-btn" onclick="trocarModo(2, 9, 'b2')">DUETO</button>
-            <button id="b4" class="m-btn" onclick="trocarModo(4, 11, 'b4')">QUARTETO</button>
+    <div id="login-screen">
+        <div class="login-card">
+            <h2>TERMO ARENA</h2>
+            <input type="text" id="nick" placeholder="Seu Nickname (ex: Vander)">
+            <input type="text" id="sala-input" placeholder="Código da Sala (ex: CARNE)">
+            <button class="btn-entrar" onclick="login()">ENTRAR NA ARENA</button>
         </div>
-        <div style="font-size: 0.8rem; color: #aaa;">PONTOS: <span id="pts" style="color:white">0</span></div>
+    </div>
+
+    <header id="main-header" style="display:none">
+        <div class="modes">
+            <button id="b1" class="m-btn active" onclick="setMode(1, 6, 'b1')">SOLO</button>
+            <button id="b2" class="m-btn" onclick="setMode(2, 9, 'b2')">DUETO</button>
+            <button id="b4" class="m-btn" onclick="setMode(4, 11, 'b4')">QUARTETO</button>
+        </div>
+        <div>🏆 <span id="score">0</span></div>
     </header>
 
     <div id="toast"></div>
-    <div id="container"></div>
+    <div id="game-container"></div>
 
-    <div class="keyboard">
-        <div class="kb-row" id="row1"></div>
-        <div class="kb-row" id="row2"></div>
-        <div class="kb-row" id="row3"></div>
+    <div class="keyboard" id="main-kb" style="display:none">
+        <div class="kb-row">
+            <button class="key" onclick="press('Q')">Q</button><button class="key" onclick="press('W')">W</button><button class="key" onclick="press('E')">E</button><button class="key" onclick="press('R')">R</button><button class="key" onclick="press('T')">T</button><button class="key" onclick="press('Y')">Y</button><button class="key" onclick="press('U')">U</button><button class="key" onclick="press('I')">I</button><button class="key" onclick="press('O')">O</button><button class="key" onclick="press('P')">P</button>
+        </div>
+        <div class="kb-row">
+            <button class="key" onclick="press('A')">A</button><button class="key" onclick="press('S')">S</button><button class="key" onclick="press('D')">D</button><button class="key" onclick="press('F')">F</button><button class="key" onclick="press('G')">G</button><button class="key" onclick="press('H')">H</button><button class="key" onclick="press('J')">J</button><button class="key" onclick="press('K')">K</button><button class="key" onclick="press('L')">L</button>
+        </div>
+        <div class="kb-row">
+            <button class="key wide" onclick="press('ENTER')">ENTER</button>
+            <button class="key" onclick="press('Z')">Z</button><button class="key" onclick="press('X')">X</button><button class="key" onclick="press('C')">C</button><button class="key" onclick="press('V')">V</button><button class="key" onclick="press('B')">B</button><button class="key" onclick="press('N')">N</button><button class="key" onclick="press('M')">M</button>
+            <button class="key wide" onclick="press('DEL')">⌫</button>
+        </div>
+    </div>
+
+    <div class="ranking" id="main-rank" style="display:none">
+        SALA <span id="sala-nome"></span>: #1 <span id="user-nome"></span>: <span id="r-pts">0</span> pts
     </div>
 
     <script>
-        const DIC = ["LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "BANCO", "CAIXA", "COFRE", "ATIVO", "VALOR", "PLANO", "SORTE", "ARENA", "TERMO", "MUNDO", "SAGAZ", "TEMPO", "PRATO", "PASTO", "VIVER", "SABER", "FORTE", "CHAVE", "PEDRA", "BRASIL", "NOITE", "LETRA", "LIVRO", "CORPO", "MENTE", "SONHO", "PROVA", "VENTO", "GRITO", "CANTO", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO"];
-        let RESPOSTAS = [], fimGrids = [], totalGrids = 1, maxTents = 6, row = 0, col = 0, chuteArray = ["", "", "", "", ""];
-        let totalPts = parseInt(localStorage.getItem('vanderPts')) || 0;
+        const PALAVRA = "CARNE";
+        const DIC = ["CARNE", "TERMO", "ARENA", "MUNDO", "SORTE", "PLANO", "PODER", "IDEIA", "JOGOS", "CAMPO"];
+        let totalGrids = 1, maxTents = 6, row = 0, col = 0, chute = "", fim = false, totalPts = 0;
+        let gridsResolvidos = [];
 
-        function trocarModo(n, t, id) {
-            totalGrids = n; maxTents = t;
+        function login() {
+            const n = document.getElementById('nick').value;
+            const s = document.getElementById('sala-input').value;
+            if(!n || !s) return alert("Preencha tudo!");
+            
+            document.getElementById('user-nome').innerText = n;
+            document.getElementById('sala-nome').innerText = s.toUpperCase();
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-header').style.display = 'flex';
+            document.getElementById('main-kb').style.display = 'block';
+            document.getElementById('main-rank').style.display = 'block';
+            
+            setMode(1, 6, 'b1');
+            showMsg("BEM-VINDO À ARENA!", "#538d4e");
+        }
+
+        function setMode(num, tents, btnId) {
             document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            novoJogo();
+            document.getElementById(btnId).classList.add('active');
+            totalGrids = num; maxTents = tents;
+            resetGame();
         }
 
-        function novoJogo() {
-            row = 0; col = 0; chuteArray = ["", "", "", "", ""];
-            RESPOSTAS = []; fimGrids = new Array(totalGrids).fill(false);
-            for(let i=0; i<totalGrids; i++) {
-                let p; do { p = DIC[Math.floor(Math.random()*DIC.length)]; } while(RESPOSTAS.includes(p));
-                RESPOSTAS.push(p);
-            }
-            document.getElementById('pts').innerText = totalPts;
-            const cont = document.getElementById('container');
-            cont.innerHTML = "";
-            cont.className = totalGrids == 1 ? "solo-l" : (totalGrids == 2 ? "dueto-l" : "quarteto-l");
-
+        function resetGame() {
+            const container = document.getElementById('game-container');
+            container.innerHTML = "";
+            container.className = totalGrids === 1 ? "solo" : (totalGrids === 2 ? "dueto" : "quarteto");
+            gridsResolvidos = new Array(totalGrids).fill(false);
             for(let g=0; g<totalGrids; g++) {
-                let d = document.createElement('div');
-                d.className = "grid"; d.id = `grid-${g}`;
-                d.style.gridTemplateRows = `repeat(${maxTents}, 1fr)`;
-                d.style.gridTemplateColumns = "repeat(5, 1fr)";
-                for(let i=0; i<maxTents*5; i++) {
-                    let t = document.createElement('div'); t.className = "tile"; t.id = `g${g}-t${i}`;
-                    d.appendChild(t);
-                }
-                cont.appendChild(d);
+                let grid = document.createElement('div');
+                grid.className = "grid"; grid.id = "grid-" + g;
+                grid.style.gridTemplateRows = `repeat(${maxTents}, 1fr)`;
+                grid.style.gridTemplateColumns = `repeat(5, 1fr)`;
+                for(let i=0; i < maxTents * 5; i++) grid.innerHTML += `<div class="tile" id="g${g}-t${i}"></div>`;
+                container.appendChild(grid);
             }
-            limparTeclado(); updateUI();
+            row = 0; col = 0; chute = ""; fim = false;
         }
 
-        function limparTeclado() {
-            document.querySelectorAll('.key').forEach(k => k.classList.remove('key-correct', 'key-present', 'key-absent'));
+        function showMsg(txt, cor) {
+            const t = document.getElementById('toast');
+            t.innerText = txt; t.style.backgroundColor = cor;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2500);
         }
-
-        const keys = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
-        keys.forEach((r, i) => {
-            const rowEl = document.getElementById('row'+(i+1));
-            r.forEach(k => {
-                let b = document.createElement('button');
-                b.className = (k === 'ENTER' || k === 'DEL') ? 'key wide' : 'key';
-                b.id = `key-${k}`; b.innerText = k === 'DEL' ? '⌫' : k;
-                b.onclick = () => press(k);
-                rowEl.appendChild(b);
-            });
-        });
 
         function press(l) {
-            if(fimGrids.every(x => x)) return;
+            if(fim) return;
             if(l === 'DEL') {
-                chuteArray[col] = "";
-                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = "";
-                if(col > 0) col--;
-            } else if(l === 'ENTER') {
-                if(chuteArray.join("").length < 5) return;
-                verificar();
-            } else if(col < 5) {
-                chuteArray[col] = l;
-                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = l;
-                if(col < 4) col++;
+                if(col > 0) { col--; chute = chute.slice(0,-1);
+                for(let g=0; g<totalGrids; g++) if(!gridsResolvidos[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = ""; }
+            } else if(l === 'ENTER' && chute.length === 5) { verificar(); }
+            else if(chute.length < 5 && l !== 'ENTER' && l !== 'DEL') {
+                for(let g=0; g<totalGrids; g++) if(!gridsResolvidos[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = l;
+                chute += l; col++;
             }
-            updateUI();
         }
 
         function verificar() {
-            let s = chuteArray.join("");
-            let coresTeclado = {}; 
-
+            if(!DIC.includes(chute)) { showMsg("PALAVRA INVÁLIDA", "#781919"); return; }
+            let todosCerto = true;
             for(let g=0; g<totalGrids; g++) {
-                if(fimGrids[g]) continue;
-                let r = RESPOSTAS[g], tempR = r.split(""), acertos = 0;
-
+                if(gridsResolvidos[g]) continue;
+                let acertos = 0;
                 for(let i=0; i<5; i++) {
-                    let t = document.getElementById(`g${g}-t${row*5+i}`);
-                    if(s[i] === r[i]) {
-                        t.classList.add('c'); tempR[i] = null; acertos++;
-                        coresTeclado[s[i]] = 'c';
-                    }
+                    const t = document.getElementById(`g${g}-t${row*5+i}`);
+                    if(chute[i] === PALAVRA[i]) { t.classList.add('c'); acertos++; }
+                    else if(PALAVRA.includes(chute[i])) t.classList.add('p');
+                    else t.classList.add('a');
                 }
-                for(let i=0; i<5; i++) {
-                    let t = document.getElementById(`g${g}-t${row*5+i}`);
-                    if(t.classList.contains('c')) continue;
-                    if(tempR.includes(s[i])) {
-                        t.classList.add('p'); tempR[tempR.indexOf(s[i])] = null;
-                        if(coresTeclado[s[i]] !== 'c') coresTeclado[s[i]] = 'p';
-                    } else {
-                        t.classList.add('a');
-                        if(!coresTeclado[s[i]]) coresTeclado[s[i]] = 'a';
-                    }
-                }
-                if(acertos === 5) { 
-                    fimGrids[g] = true; 
-                    document.getElementById(`grid-${g}`).classList.add('done');
-                }
+                if(acertos === 5) { gridsResolvidos[g] = true; document.getElementById("grid-"+g).classList.add('done'); }
+                else todosCerto = false;
             }
-
-            // Atualiza teclado
-            for(let letra in coresTeclado) {
-                let k = document.getElementById(`key-${letra}`);
-                if(coresTeclado[letra] === 'c') { k.classList.add('key-correct'); k.classList.remove('key-present', 'key-absent'); }
-                else if(coresTeclado[letra] === 'p') { if(!k.classList.contains('key-correct')) k.classList.add('key-present'); }
-                else if(coresTeclado[letra] === 'a') { if(!k.classList.contains('key-correct') && !k.classList.contains('key-present')) k.classList.add('key-absent'); }
-            }
-
-            if(fimGrids.every(x => x)) {
-                totalPts += (maxTents - row) + (totalGrids * 2);
-                localStorage.setItem('vanderPts', totalPts);
-                showToast("VOCÊ VENCEU! 🏆");
-                setTimeout(novoJogo, 3000);
+            if(gridsResolvidos.every(v => v === true)) {
+                fim = true; let ganho = 3 + (maxTents - 1 - row);
+                totalPts += ganho; document.getElementById('score').innerText = totalPts;
+                document.getElementById('r-pts').innerText = totalPts;
+                showMsg(`VITÓRIA! +${ganho} PTS`, "#538d4e");
             } else {
-                row++; col = 0; chuteArray = ["", "", "", "", ""];
-                if(row === maxTents) {
-                    showToast("FIM DE JOGO! ❌ RESPOSTAS: " + RESPOSTAS.join(", "));
-                    setTimeout(novoJogo, 4000);
-                }
-            }
-            updateUI();
-        }
-
-        function updateUI() {
-            document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
-            for(let g=0; g<totalGrids; g++) {
-                if(!fimGrids[g] && row < maxTents) document.getElementById(`g${g}-t${row*5+col}`).classList.add('selected');
+                row++; col = 0; chute = "";
+                if(row === maxTents) { fim = true; showMsg("FIM DE JOGO! ERA: " + PALAVRA, "#781919"); }
             }
         }
-
-        function showToast(m) {
-            const t = document.getElementById('toast');
-            t.innerText = m; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
-
-        novoJogo();
     </script>
 </body>
 </html>

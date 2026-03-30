@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Termo Arena Pro</title>
+    <style>
+        :root { --bg: #121213; --tile: #3a3a3c; --correct: #538d4e; --present: #b59f3b; --absent: #3a3a3c; --purple: #a855f7; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: white; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
+        #login { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .card { background: #1a1a1b; padding: 25px; border-radius: 12px; width: 100%; max-width: 320px; text-align: center; border: 1px solid #333; }
+        input { background: #121213; border: 1px solid #444; color: white; padding: 12px; width: 100%; border-radius: 6px; margin: 10px 0; text-align: center; }
+        button.play { background: var(--purple); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; }
+        header { padding: 5px; width: 100%; display: flex; justify-content: space-around; align-items: center; background: #1a1a1b; }
+        .m-btn { background: #333; border: 1px solid #444; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.7rem; }
+        .active { background: var(--correct); border: none; }
+        #container { display: grid; gap: 5px; padding: 5px; width: 100%; flex: 1; justify-content: center; align-content: center; }
+        .grid { display: grid; gap: 3px; aspect-ratio: 5/6; }
+        .tile { border: 1.5px solid var(--tile); display: flex; align-items: center; justify-content: center; font-weight: bold; text-transform: uppercase; border-radius: 3px; font-size: 1.2rem; }
+        .selected { border: 2.5px solid var(--purple) !important; box-shadow: 0 0 10px var(--purple); }
+        .solo .grid { height: 35vh; grid-template-columns: repeat(5, 1fr); }
+        .dueto { grid-template-columns: 1fr 1fr; gap: 10px; } .dueto .grid { height: 26vh; }
+        .quarteto { grid-template-columns: 1fr 1fr; gap: 8px; } .quarteto .grid { height: 18vh; }
+        .keyboard { width: 100%; background: #1a1a1b; padding: 5px 0; border-top: 1px solid #333; }
+        .kb-row { display: flex; justify-content: center; gap: 3px; margin-bottom: 5px; }
+        .key { background: #818384; border: none; color: white; padding: 16px 0; border-radius: 4px; font-weight: bold; font-size: 0.8rem; flex: 1; min-width: 28px; }
+        .key.wide { flex: 1.8; background: #565758; }
+        .ranking { width: 100%; background: #000; padding: 8px; font-size: 0.75rem; text-align: center; color: #ffd700; border-top: 1px solid #222; }
+        #toast { position: fixed; top: 12%; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 8px; z-index: 6000; font-weight: bold; display: none; }
+        .c { background: var(--correct) !important; border: none; }
+        .p { background: var(--present) !important; border: none; }
+        .a { background: var(--absent) !important; border: none; }
+        .done { opacity: 0.4; filter: grayscale(1); }
+    </style>
+</head>
+<body>
+    <div id="login">
+        <div class="card">
+            <h2 style="color:var(--purple); margin-bottom:15px">TERMO ARENA</h2>
+            <input type="text" id="nick" placeholder="NICKNAME">
+            <input type="text" id="sala" placeholder="SALA">
+            <button class="play" onclick="entrar()">ENTRAR</button>
+        </div>
+    </div>
+    <header id="h" style="display:none">
+        <div class="modes">
+            <button id="b1" class="m-btn active" onclick="setMode(1, 6, 'b1')">SOLO</button>
+            <button id="b2" class="m-btn" onclick="setMode(2, 9, 'b2')">DUETO</button>
+            <button id="b4" class="m-btn" onclick="setMode(4, 11, 'b4')">QUARTETO</button>
+        </div>
+        <div style="font-weight:bold">🏆 <span id="pts">0</span></div>
+    </header>
+    <div id="toast"></div>
+    <div id="container"></div>
+    <div class="keyboard" id="kb" style="display:none">
+        <div class="kb-row" id="row1"></div>
+        <div class="kb-row" id="row2"></div>
+        <div class="kb-row" id="row3"></div>
+    </div>
+    <div class="ranking" id="rk" style="display:none">
+        RECORDISTA: <span id="un"></span> | <span id="rp">0</span> pts
+    </div>
+    <script>
+        const DIC = ["PASTO", "PRATO", "ARENA", "TERMO", "MUNDO", "SORTE", "PLANO", "PODER", "IDEIA", "JOGOS", "SAGAZ", "NOITE", "TEMPO", "LETRA", "LIVRO", "CARTA", "AMIGO", "BRASIL", "CORPO", "MENTE", "SONHO", "VALOR", "ATIVO", "GRANA", "CHAVE", "PORTA", "PEDRA", "COBRA", "FORCA", "PROVA", "VENTO", "SABER", "VIVER", "FORTE", "GRITO", "CANTO", "DENTE", "BRUXA", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PLACA", "PEIXE", "LIMPO", "SUSTO", "MANHÃ", "DOCES", "GELOS", "PONTE", "FERRO"];
+        let RESPOSTA = ""; 
+        let totalGrids = 1, maxTents = 6, row = 0, col = 0, fim = false, totalPts = parseInt(localStorage.getItem('vanderPts')) || 0, gridsFeitos = [];
+        let chuteArray = ["", "", "", "", ""];
+        const keys = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
+        keys.forEach((r, i) => {
+            const rowEl = document.getElementById('row'+(i+1));
+            r.forEach(k => {
+                let b = document.createElement('button');
+                b.className = (k === 'ENTER' || k === 'DEL') ? 'key wide' : 'key';
+                b.innerText = k === 'DEL' ? '⌫' : k;
+                b.onclick = () => press(k);
+                rowEl.appendChild(b);
+            });
+        });
+        function entrar() {
+            const n = document.getElementById('nick').value;
+            if(!n) return;
+            document.getElementById('un').innerText = n;
+            document.getElementById('pts').innerText = totalPts;
+            document.getElementById('rp').innerText = totalPts;
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('h').style.display = 'flex';
+            document.getElementById('kb').style.display = 'block';
+            document.getElementById('rk').style.display = 'block';
+            setMode(1, 6, 'b1');
+        }
+        function setMode(n, t, id) {
+            document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            totalGrids = n; maxTents = t;
+            RESPOSTA = DIC[Math.floor(Math.random() * DIC.length)]; 
+            reset();
+        }
+        function reset() {
+            const cont = document.getElementById('container');
+            cont.innerHTML = "";
+            cont.className = totalGrids === 1 ? "solo" : (totalGrids === 2 ? "dueto" : "quarteto");
+            gridsFeitos = new Array(totalGrids).fill(false);
+            for(let g=0; g<totalGrids; g++) {
+                let d = document.createElement('div');
+                d.className = "grid"; d.id = "grid-"+g;
+                d.style.gridTemplateRows = `repeat(${maxTents}, 1fr)`;
+                d.style.gridTemplateColumns = `repeat(5, 1fr)`;
+                for(let i=0; i<maxTents*5; i++) {
+                    let tile = document.createElement('div');
+                    tile.className = "tile"; tile.id = `g${g}-t${i}`;
+                    tile.onclick = () => { if(Math.floor(i/5) === row) { col = i % 5; updateUI(); } };
+                    d.appendChild(tile);
+                }
+                cont.appendChild(d);
+            }
+            row = 0; col = 0; chuteArray = ["", "", "", "", ""]; fim = false;
+            updateUI();
+        }
+        function updateUI() {
+            document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
+            for(let g=0; g<totalGrids; g++) {
+                if(!gridsFeitos[g]) document.getElementById(`g${g}-t${row*5+col}`).classList.add('selected');
+            }
+        }
+        function msg(txt, cor) {
+            const t = document.getElementById('toast');
+            t.innerText = txt; t.style.backgroundColor = cor; t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+        function press(l) {
+            if(fim) return;
+            if(l === 'DEL') {
+                chuteArray[col] = "";
+                for(let g=0; g<totalGrids; g++) if(!gridsFeitos[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = "";
+                if(col > 0) col--;
+            } else if(l === 'ENTER') {
+                let s = chuteArray.join("");
+                if(s.length < 5) return msg("FALTAM LETRAS", "#781919");
+                verificar(s);
+            } else {
+                chuteArray[col] = l;
+                for(let g=0; g<totalGrids; g++) if(!gridsFeitos[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = l;
+                if(col < 4) col++;
+            }
+            updateUI();
+        }
+        function verificar(s) {
+            for(let g=0; g<totalGrids; g++) {
+                if(gridsFeitos[g]) continue;
+                let c = 0;
+                for(let i=0; i<5; i++) {
+                    const t = document.getElementById(`g${g}-t${row*5+i}`);
+                    if(s[i] === RESPOSTA[i]) { t.classList.add('c'); c++; }
+                    else if(RESPOSTA.includes(s[i])) t.classList.add('p');
+                    else t.classList.add('a');
+                }
+                if(c === 5) { gridsFeitos[g] = true; document.getElementById("grid-"+g).classList.add('done'); }
+            }
+            if(gridsFeitos.every(v => v === true)) {
+                fim = true; let pts = 3 + (maxTents - 1 - row);
+                totalPts += pts;
+                localStorage.setItem('vanderPts', totalPts);
+                document.getElementById('pts').innerText = totalPts;
+                document.getElementById('rp').innerText = totalPts;
+                msg("ACERTOU! +"+pts, "#538d4e");
+            } else {
+                row++; col = 0; chuteArray = ["", "", "", "", ""];
+                if(row === maxTents) { fim = true; msg("ERA: " + RESPOSTA, "#781919"); }
+            }
+            updateUI();
+        }
+    </script>
+</body>
+</html>

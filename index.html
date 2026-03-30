@@ -3,93 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena Oficial</title>
+    <title>Termo Arena Pro</title>
     <style>
-        :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; --purple: #8b5cf6; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
+        body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
         
-        /* TELA DE LOGIN */
+        /* LOGIN */
         #login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .card h1 { font-size: 2rem; margin-bottom: 20px; letter-spacing: 2px; }
-        input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.1rem; }
-        .play-btn { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+        .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; }
+        input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; }
+        .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* JOGO */
-        header { padding: 15px; text-align: center; background: rgba(0,0,0,0.1); }
-        header h1 { font-size: 1.8rem; letter-spacing: 4px; font-weight: 900; }
-        .modes { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
-        .m-btn { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 15px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; }
+        /* CABEÇALHO */
+        header { width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.1); }
+        .logo { font-size: 2rem; font-weight: 900; letter-spacing: 5px; }
+        .modes { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
+        .m-btn { background: rgba(0,0,0,0.2); border: 1px solid white; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.7rem; }
         .active { background: white; color: var(--bg); }
 
-        #container { flex: 1; display: grid; gap: 10px; padding: 10px; justify-content: center; align-content: center; overflow-y: auto; }
+        /* AREA DO JOGO */
+        #container { flex: 1; display: grid; gap: 10px; padding: 15px; justify-content: center; align-content: center; width: 100%; }
         .grid { display: grid; gap: 5px; }
-        .tile { background: var(--tile); border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: bold; text-transform: uppercase; border-radius: 4px; font-size: 1.8rem; aspect-ratio: 1/1; width: 55px; }
-        .selected { border: 3px solid white !important; }
-        
-        .dueto-layout { grid-template-columns: 1fr 1fr; }
-        .dueto-layout .tile { width: 45px; font-size: 1.4rem; }
+        .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; }
+        .selected { border-color: white !important; }
+        .dueto-layout { grid-template-columns: 1fr 1fr; max-width: 95vw; }
+        .dueto-layout .tile { width: clamp(35px, 9vw, 45px); font-size: 1.5rem; }
 
         /* TECLADO */
-        .keyboard { background: rgba(0,0,0,0.2); padding: 10px 5px 25px 5px; }
+        .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.1); }
         .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
-        .key { background: #818384; border: none; color: white; padding: 18px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; transition: 0.2s; }
+        .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1.1rem; flex: 1; text-align: center; }
         .key.wide { flex: 1.5; font-size: 0.8rem; }
-        
-        /* CORES */
+
+        /* CORES RESULTADO */
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
         .a { background: var(--absent) !important; border: none; }
         .key-correct { background: var(--correct) !important; }
         .key-present { background: var(--present) !important; }
-        .key-absent { background: #312a2c !important; color: #555; }
-        .done { opacity: 0.5; }
+        .key-absent { background: #312a2c !important; opacity: 0.5; }
+        .done { opacity: 0.4; pointer-events: none; }
 
-        #toast { position: fixed; top: 12%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 10px 20px; border-radius: 5px; font-weight: bold; z-index: 10000; display: none; }
+        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
     <div id="login">
         <div class="card">
-            <h1>TERMO</h1>
-            <input type="text" id="nick" placeholder="NOME DO JOGADOR" maxlength="12">
-            <button class="play-btn" onclick="entrar()">ENTRAR NA SALA</button>
+            <h1 style="letter-spacing:5px; margin-bottom:20px">TERMO</h1>
+            <input type="text" id="nick" placeholder="SEU NOME">
+            <button class="btn-entrar" onclick="entrar()">JOGAR AGORA</button>
         </div>
     </div>
 
-    <header id="main-h" style="display:none">
-        <h1>TERMO</h1>
+    <header id="h-game" style="display:none">
+        <div class="logo">TERMO</div>
         <div class="modes">
-            <button id="b1" class="m-btn active" onclick="mudar(1, 6, 'b1')">SOLO</button>
-            <button id="b2" class="m-btn" onclick="mudar(2, 9, 'b2')">DUETO</button>
+            <button id="b1" class="m-btn active" onclick="mudarModo(1, 6, 'b1')">SOLO</button>
+            <button id="b2" class="m-btn" onclick="mudarModo(2, 9, 'b2')">DUETO</button>
         </div>
     </header>
 
     <div id="toast"></div>
     <div id="container"></div>
 
-    <div class="keyboard" id="main-kb" style="display:none">
+    <div class="keyboard" id="kb-game" style="display:none">
         <div class="kb-row" id="row1"></div>
         <div class="kb-row" id="row2"></div>
         <div class="kb-row" id="row3"></div>
     </div>
 
     <script>
-        const LISTA_VALIDA = ["PASTO", "PRATO", "LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "BANCO", "CAIXA", "COFRE", "ATIVO", "VALOR", "PLANO", "SORTE", "ARENA", "TERMO", "MUNDO", "SAGAZ", "TEMPO", "VIVER", "SABER", "FORTE", "CHAVE", "PEDRA", "BRASIL", "NOITE", "LETRA", "LIVRO", "CORPO", "MENTE", "SONHO", "PROVA", "VENTO", "GRITO", "CANTO", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO"];
-        
+        // Lista expandida para evitar bloqueios injustos
+        const PALAVRAS_ACEITAS = ["TERMO", "PRATO", "PASTO", "LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "BANCO", "CAIXA", "COFRE", "ATIVO", "VALOR", "PLANO", "SORTE", "ARENA", "MUNDO", "SAGAZ", "TEMPO", "VIVER", "SABER", "FORTE", "CHAVE", "PEDRA", "BRASIL", "NOITE", "LETRA", "LIVRO", "CORPO", "MENTE", "SONHO", "PROVA", "VENTO", "GRITO", "CANTO", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO", "PORTA", "MESAS", "GATOS", "FESTA", "FOGO", "AGUA", "TERRA", "VENTO"];
+
         let RESPOSTAS = [], fimGrids = [], totalGrids = 1, maxTents = 6, row = 0, col = 0, chute = ["", "", "", "", ""];
 
         function entrar() {
-            if(!document.getElementById('nick').value) return alert("Digite seu nome!");
+            if(!document.getElementById('nick').value) return;
             document.getElementById('login').style.display = 'none';
-            document.getElementById('main-h').style.display = 'block';
-            document.getElementById('main-kb').style.display = 'block';
+            document.getElementById('h-game').style.display = 'block';
+            document.getElementById('kb-game').style.display = 'block';
             novoJogo();
         }
 
-        function mudar(n, t, id) {
+        function mudarModo(n, t, id) {
             totalGrids = n; maxTents = t;
             document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -100,7 +100,7 @@
             row = 0; col = 0; chute = ["", "", "", "", ""];
             RESPOSTAS = []; fimGrids = new Array(totalGrids).fill(false);
             for(let i=0; i<totalGrids; i++) {
-                let p; do { p = LISTA_VALIDA[Math.floor(Math.random()*LISTA_VALIDA.length)]; } while(RESPOSTAS.includes(p));
+                let p; do { p = PALAVRAS_ACEITAS[Math.floor(Math.random()*PALAVRAS_ACEITAS.length)]; } while(RESPOSTAS.includes(p));
                 RESPOSTAS.push(p);
             }
             const cont = document.getElementById('container');
@@ -125,30 +125,31 @@
             document.querySelectorAll('.key').forEach(k => k.classList.remove('key-correct', 'key-present', 'key-absent'));
         }
 
-        const keys = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
-        keys.forEach((r, i) => {
+        const layoutTeclado = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
+        layoutTeclado.forEach((r, i) => {
             const rowEl = document.getElementById('row'+(i+1));
+            rowEl.innerHTML = "";
             r.forEach(k => {
                 let b = document.createElement('button');
                 b.className = (k === 'ENTER' || k === 'DEL') ? 'key wide' : 'key';
                 b.id = `key-${k}`; b.innerText = k === 'DEL' ? '⌫' : k;
-                b.onclick = () => press(k);
+                b.onclick = () => clicarTecla(k);
                 rowEl.appendChild(b);
             });
         });
 
-        function press(l) {
+        function clicarTecla(l) {
             if(fimGrids.every(x => x)) return;
             if(l === 'DEL') {
-                if(col === 0 && chute[0] === "") return;
                 if(chute[col] === "" && col > 0) col--;
                 chute[col] = "";
                 for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = "";
             } else if(l === 'ENTER') {
-                let s = chute.join("");
-                if(s.length < 5) return showToast("PALAVRA CURTA");
-                if(!LISTA_VALIDA.includes(s)) return showToast("PALAVRA INVÁLIDA");
-                verificar();
+                let palavraFinal = chute.join("");
+                if(palavraFinal.length < 5) return showToast("PALAVRA INCOMPLETA");
+                // TRAVA DE SEGURANÇA AQUI:
+                if(!PALAVRAS_ACEITAS.includes(palavraFinal)) return showToast("ESTA PALAVRA NÃO EXISTE");
+                processarEnvio();
             } else if(col < 5) {
                 chute[col] = l;
                 for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = l;
@@ -157,7 +158,7 @@
             updateUI();
         }
 
-        function verificar() {
+        function processarEnvio() {
             let s = chute.join("");
             for(let g=0; g<totalGrids; g++) {
                 if(fimGrids[g]) continue;
@@ -184,10 +185,10 @@
                 }
                 if(acertos === 5) { fimGrids[g] = true; document.getElementById(`grid-${g}`).classList.add('done'); }
             }
-            if(fimGrids.every(x => x)) { showToast("ESPETACULAR! 🏆"); setTimeout(novoJogo, 3000); }
+            if(fimGrids.every(x => x)) { showToast("VOCÊ VENCEU! 🏆"); setTimeout(novoJogo, 3000); }
             else {
                 row++; col = 0; chute = ["", "", "", "", ""];
-                if(row === maxTents) { showToast("RESPOSTA: " + RESPOSTAS.join(" | ")); setTimeout(novoJogo, 4000); }
+                if(row === maxTents) { showToast("FIM! RESPOSTA: " + RESPOSTAS.join(" | ")); setTimeout(novoJogo, 4000); }
             }
             updateUI();
         }
@@ -202,7 +203,7 @@
         function showToast(m) {
             const t = document.getElementById('toast');
             t.innerText = m; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 2500);
+            setTimeout(() => t.style.display = 'none', 2000);
         }
     </script>
 </body>

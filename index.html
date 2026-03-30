@@ -3,38 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena Vander - OFICIAL</title>
+    <title>Termo Arena Vander</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
-        body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
+        body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; justify-content: center; }
+        
         #login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; }
-        input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; text-transform: uppercase; }
-        .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        header { width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.1); }
+        .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        
+        header { width: 100%; padding: 10px; text-align: center; position: absolute; top: 0; }
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 5px; }
-        .modes { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
-        .m-btn { background: rgba(0,0,0,0.2); border: 1px solid white; color: white; padding: 6px 15px; border-radius: 5px; font-size: 0.8rem; }
-        .active { background: white; color: var(--bg); font-weight: bold; }
-        #container { flex: 1; display: grid; gap: 10px; padding: 15px; justify-content: center; align-content: center; width: 100%; }
+        
+        #container { flex: 1; display: grid; gap: 10px; padding: 70px 15px 15px; justify-content: center; align-content: center; width: 100%; }
         .grid { display: grid; gap: 5px; }
-        .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; cursor: pointer; }
-        .selected { border: 3px solid white !important; transform: scale(1.05); }
-        .dueto-layout { grid-template-columns: 1fr 1fr; max-width: 95vw; }
-        .dueto-layout .tile { width: clamp(35px, 9vw, 45px); font-size: 1.5rem; }
+        .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 55px); text-transform: uppercase; }
+        .selected { border: 3px solid white !important; }
+        
         .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.2); }
         .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
-        .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; }
+        .key { background: #818384; border: none; color: white; padding: 18px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; cursor: pointer; }
         .key.wide { flex: 1.5; font-size: 0.7rem; }
+
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
         .a { background: var(--absent) !important; border: none; }
-        .key-correct { background: var(--correct) !important; }
-        .key-present { background: var(--present) !important; }
-        .key-absent { background: #312a2c !important; opacity: 0.4; }
-        .done { opacity: 0.4; pointer-events: none; }
-        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 15px 30px; border-radius: 10px; font-weight: bold; display: none; z-index: 10000; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 15px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; text-align: center; }
     </style>
 </head>
 <body>
@@ -42,19 +36,12 @@
     <div id="login">
         <div class="card">
             <h1 style="letter-spacing:5px; margin-bottom:20px">TERMO</h1>
-            <input type="text" id="nick" placeholder="SEU NOME">
-            <button class="btn-entrar" onclick="entrar()">JOGAR</button>
+            <input type="text" id="nick" style="background:#312a2c; border:2px solid #555; color:white; padding:15px; width:100%; border-radius:8px; margin-bottom:15px; text-align:center;" placeholder="SEU NOME">
+            <button onclick="entrar()" style="background:var(--correct); color:white; border:none; padding:15px; width:100%; border-radius:8px; font-weight:bold;">JOGAR</button>
         </div>
     </div>
 
-    <header id="h-game" style="display:none">
-        <div class="logo">TERMO</div>
-        <div class="modes">
-            <button id="b1" class="m-btn active" onclick="mudarModo(1, 6, 'b1')">SOLO</button>
-            <button id="b2" class="m-btn" onclick="mudarModo(2, 9, 'b2')">DUETO</button>
-        </div>
-    </header>
-
+    <header id="h-game" style="display:none"><div class="logo">TERMO</div></header>
     <div id="toast"></div>
     <div id="container"></div>
 
@@ -65,140 +52,103 @@
     </div>
 
     <script>
-        // LISTA GIGANTE INTEGRADA (ACEITA PLURAIS E VERBOS)
-        const DICIONARIO = ["SAGAZ", "TERMO", "MEXER", "NOBRE", "SENSO", "AFETO", "ALGOZ", "ETICA", "VIGOR", "FAZER", "FATO", "IDEIA", "PODER", "MORAL", "MUITO", "HONRA", "JUSTO", "SOBRE", "DORME", "INDIO", "FOCO", "SONHO", "RAZAO", "QUERER", "ETNIA", "ICONE", "MUNDO", "TEMPO", "PLENO", "CERTO", "VULGO", "DIZER", "BANAL", "FORTE", "PESSOA", "CAUSA", "ASSIM", "PONTO", "ORDEM", "BELO", "LUGAR", "VALOR", "GRACA", "FELIZ", "MESMO", "VIVER", "PLANO", "ATIVO", "ARENA", "SORTE", "LETRA", "BRASIL", "PEDRA", "CHAVE", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO", "PORTA", "MESAS", "GATOS", "FESTA", "FOGO", "AGUA", "TERRA", "VENTO", "MUDAR", "POETA", "ROUPA", "FALTA", "DENTE", "PROVA", "GRITO", "CANTO", "MENTE", "CORPO", "LIVRO", "NOITE", "VISTA", "SOLAR", "LUNAR", "CAMPO", "CHAMA", "BRISA", "MARCO", "POSTO", "TREM", "CALOR", "FRIO", "PASSO", "BATER", "CAIXA", "BANCO", "COFRE", "LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "SENDO", "ESTAR", "HAVER", "POIS", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "MUITO", "VAGO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "FORA", "DENTRO", "CASA", "VIDA", "LEVAR", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "FRENTE", "ATRAS", "LONGE", "PERTO", "OURO", "PRATA", "BRONZE", "COPA", "JOGO", "DADO", "META", "ALVO", "FIM", "INICIO", "MEIO", "ANOS", "MESES", "DIA", "HORA", "MINUTO", "AGORA", "ONDE", "COMO", "QUEM", "QUAL", "POUCO", "GRANDE", "PEQUENO", "BONITO", "FEIO", "DOIDO", "SABIO", "SABER", "PENSAR", "AMAR", "ODIO", "PAZ", "GUERRA", "MAR", "RIO", "FLUXO", "AREA", "FORÇA", "PESO", "MASSA", "LUZ", "SOM", "VOZ", "CARA", "DOR", "RISO", "PEITO", "BRAÇO", "PERNA", "DEDO", "UNHA", "CABO", "COLO", "COURO", "PELO", "PELE", "SANGUE", "OSSOS", "CARNE", "NERVO", "VEIA", "FLOR", "FRUTA", "CAFE", "DOCE", "SAL", "MEL", "VINHO", "LEITE", "SUCO", "BOLO", "OVO", "AVE", "BOI", "VACA", "GATO", "CÃO", "RATO", "LOBO", "LEÃO", "URSO", "COBRA", "SAPO", "ONDAS", "PRAIA", "AREIA", "SOL", "LUA", "ESTRELA", "NUVEM", "CHUVA", "NEVE", "GELO", "FUMAÇA", "CINZA", "COBRE", "AÇO", "MADEIRA", "PAPEL", "TELA", "COR", "VERDE", "AZUL", "ROXO", "ROSA", "AMARELO", "BRANCO", "PRETO", "CINZA", "MARROM", "CORES", "MUSICA", "ARPA", "VIOLA", "PIANO", "TAMBOR", "RITMO", "DANÇA", "VOLTA", "GIRO", "QUEDA", "SUBIDA", "DESCIDA", "ALI", "MAIS", "MENOS", "IGUAL", "DIFER", "MANHÃ", "TARDE", "TENIS", "MEIAS", "VESTE", "FORMA", "TIPO", "CLUBE", "RADIO", "FILME", "CENA", "ATO", "ATOR", "TEMA", "FOTO", "MAPA", "BOLA", "GOL", "TIME", "REDE", "CORTE", "BASE", "TOPO", "FASE", "TESTE", "OBRA", "ARTE", "VAGA", "AVISO", "SINAL", "PESA", "MEDE", "CONTA", "SOMA", "LISTA", "TEXTO", "LINK", "SITE", "BLOG", "APP", "WEB", "CHAT", "BOT", "IA", "TELAS", "PIXEL", "DADOS", "BYTE", "CHIP", "FIO", "PLAY", "STOP", "MUDO", "CRIAR", "ABRIR", "SAIR", "IR", "VOLTA", "FICA", "TRAZ", "LEVA", "COME", "BEBE", "FALA", "OUVE", "OLHA", "PEGA", "SOLTA", "SOBE", "DESCE", "PARA", "ANDA", "CORRE", "PULA", "VIRA", "BATE", "CORTA", "FIXA", "LIGA", "FURA", "COLA", "SOPRA", "PISA", "REZA", "JURO", "MESA", "CASAS", "MESAS", "PRATO", "SOPAS", "GATOS", "DADOS", "VOTOS", "MODOS", "REDES", "TEMAS", "MAPAS", "BOLAS", "GOLS", "PIÕES", "REAIS", "VALES", "BONUS", "COPAS", "JOGOS", "FASES", "METAS", "ALVOS", "FINS", "MEIOS", "ANOS", "MESES", "DIAS", "HORAS", "MINAS", "CARAS", "DORES", "RISOS", "PELOS", "PELES", "VEIAS", "FLORES", "FRUTAS", "CAFÉS", "DOCES", "SALES", "MELES", "BOLOS", "OVOS", "AVES", "BOIS", "VACAS", "RATOS", "LOBOS", "LEÕES", "URSOS", "SAPOS", "MARÉS", "CAIS", "RIOS", "LAGO", "LAMA", "AREIA", "SOLS", "LUAS", "CÉUS", "GELOS", "AÇOS", "TELA", "TELAS", "CORES", "ARPAS", "ATOS", "VAGAS", "SOMA", "SOMAS", "SITES", "BLOGS", "APPS", "CHIPS", "FIOS", "LUZES", "SOM", "SONS", "VOZES", "IRAS", "ATÉ", "PÉS", "MÃOS", "BOCAS", "UNHAS", "DEDOS", "PEITO", "BRAÇO", "PERNA", "COURO", "NERVO", "VEIA", "SANGUE"];
+        // LISTA AMPLIADA COM PLURAIS
+        const PALAVRAS = ["SAGAZ", "TERMO", "NOBRE", "MEXER", "AFETO", "VIGOR", "FAZER", "IDEIA", "PODER", "MUITO", "MESAS", "CASAS", "LIVRO", "PRATO", "GATOS", "ARENA", "VALOR", "CASA", "ATIVO", "SORTE", "BANCO", "VIVER", "TEMPO", "FORTE", "PORTA", "GENTE", "MUNDO", "PEDRA", "RADIO", "TIGRE", "VERBO", "FRASE", "FESTA", "FOGO", "AGUA", "ROUPA", "CORPO", "MENTE", "NOITE", "VISTA", "CAMPO", "CHAMA", "TREM", "CALOR", "FRIO", "CAIXA", "LUCRO", "JUROS", "BOLSA", "RENDA", "SENDO", "ESTAR", "HAVER", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "VIDA", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "OURO", "PRATA", "COPA", "JOGO", "DADO", "META", "ALVO", "ANOS", "MESES", "HORA", "ONDE", "COMO", "QUAL", "POUCO", "PAZ", "MAR", "RIO", "FLUXO", "AREA", "FORCA", "PESO", "LUZ", "SOM", "VOZ", "DOR", "RISO", "DEDO", "FLOR", "FRUTA", "CAFE", "DOCE", "SAL", "MEL", "BOLO", "OVO", "BOI", "VACA", "SAPO", "SOL", "LUA", "AREIA", "NUVEM", "CHUVA", "AÇO", "TELA", "VERDE", "AZUL", "ROXO", "ROSA", "BOLA", "GOL", "TIME", "REDE", "BASE", "TOPO", "FASE", "OBRA", "ARTE", "VAGA", "SINAL", "TEXTO", "SITE", "BLOG", "APP", "CHAT", "BOT", "FIO", "PLAY", "SAIR", "VOLTA", "FICA", "TRAZ", "LEVA", "COME", "BEBE", "FALA", "OUVE", "OLHA", "PEGA", "PARA", "ANDA", "CORRE", "PULA", "BATE", "COLA", "PISA", "REZA", "JURO"];
 
-        let RESPOSTAS = [], fimGrids = [], totalGrids = 1, maxTents = 6, row = 0, col = 0, chute = ["", "", "", "", ""];
+        let resposta = "", row = 0, col = 0, chute = ["", "", "", "", ""], fim = false;
 
         function entrar() {
-            if(!document.getElementById('nick').value) return;
+            const n = document.getElementById('nick').value;
+            if(!n) return;
             document.getElementById('login').style.display = 'none';
             document.getElementById('h-game').style.display = 'block';
             document.getElementById('kb-game').style.display = 'block';
-            novoJogo();
+            iniciar();
         }
 
-        function mudarModo(n, t, id) {
-            totalGrids = n; maxTents = t;
-            document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            novoJogo();
-        }
-
-        function novoJogo() {
-            row = 0; col = 0; chute = ["", "", "", "", ""];
-            RESPOSTAS = []; fimGrids = new Array(totalGrids).fill(false);
-            for(let i=0; i<totalGrids; i++) {
-                let p = DICIONARIO[Math.floor(Math.random()*DICIONARIO.length)];
-                RESPOSTAS.push(p.toUpperCase());
-            }
+        function iniciar() {
+            row = 0; col = 0; chute = ["", "", "", "", ""]; fim = false;
+            resposta = PALAVRAS[Math.floor(Math.random() * PALAVRAS.length)].toUpperCase();
             const cont = document.getElementById('container');
             cont.innerHTML = "";
-            cont.className = totalGrids === 1 ? "" : "dueto-layout";
-
-            for(let g=0; g<totalGrids; g++) {
-                let d = document.createElement('div');
-                d.className = "grid"; d.id = `grid-${g}`;
-                d.style.gridTemplateRows = `repeat(${maxTents}, 1fr)`;
-                d.style.gridTemplateColumns = "repeat(5, 1fr)";
-                for(let i=0; i<maxTents*5; i++) {
-                    let t = document.createElement('div'); 
-                    t.className = "tile"; t.id = `g${g}-t${i}`;
-                    t.onclick = () => { if(Math.floor(i/5) === row) { col = i%5; updateUI(); } };
-                    d.appendChild(t);
-                }
-                cont.appendChild(d);
+            let g = document.createElement('div');
+            g.className = "grid";
+            g.style.gridTemplateColumns = "repeat(5, 1fr)";
+            for(let i=0; i<30; i++) {
+                let t = document.createElement('div');
+                t.className = "tile"; t.id = "t"+i;
+                t.onclick = () => { if(Math.floor(i/5) === row) { col = i%5; attUI(); } };
+                g.appendChild(t);
             }
-            limparTeclado(); updateUI();
+            cont.appendChild(g);
+            montarTeclado(); attUI();
         }
 
-        function limparTeclado() {
-            document.querySelectorAll('.key').forEach(k => k.classList.remove('key-correct', 'key-present', 'key-absent'));
-        }
-
-        const keys = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
-        keys.forEach((r, i) => {
-            const rowEl = document.getElementById('row'+(i+1));
-            rowEl.innerHTML = "";
-            r.forEach(k => {
-                let b = document.createElement('button');
-                b.className = (k === 'ENTER' || k === 'DEL') ? 'key wide' : 'key';
-                b.id = `key-${k}`; b.innerText = k === 'DEL' ? '⌫' : k;
-                b.onclick = () => clicarTecla(k);
-                rowEl.appendChild(b);
+        function montarTeclado() {
+            const rows = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
+            rows.forEach((r, idx) => {
+                const el = document.getElementById('row'+(idx+1));
+                el.innerHTML = "";
+                r.forEach(k => {
+                    let b = document.createElement('button');
+                    b.className = (k.length > 1) ? "key wide" : "key";
+                    b.id = "k-"+k; b.innerText = k === "DEL" ? "⌫" : k;
+                    b.onclick = () => apertar(k);
+                    el.appendChild(b);
+                });
             });
-        });
+        }
 
-        function clicarTecla(l) {
-            if(fimGrids.every(x => x)) return;
-            if(l === 'DEL') {
+        function apertar(k) {
+            if(fim) return;
+            if(k === "DEL") {
                 chute[col] = "";
-                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = "";
+                document.getElementById("t"+(row*5+col)).innerText = "";
                 if(col > 0) col--;
-            } else if(l === 'ENTER') {
-                let p = chute.join("");
-                if(p.length < 5 || chute.includes("")) return showToast("FALTAM LETRAS");
-                if(!DICIONARIO.includes(p)) return showToast("PALAVRA INVÁLIDA");
-                processarEnvio();
-            } else {
-                chute[col] = l;
-                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = l;
+            } else if(k === "ENTER") {
+                if(chute.join("").length < 5) return msg("FALTAM LETRAS");
+                if(!PALAVRAS.includes(chute.join(""))) return msg("PALAVRA INVÁLIDA");
+                verificar();
+            } else if(col < 5) {
+                chute[col] = k;
+                document.getElementById("t"+(row*5+col)).innerText = k;
                 if(col < 4) col++;
             }
-            updateUI();
+            attUI();
         }
 
-        function processarEnvio() {
-            let s = chute.join("");
-            for(let g=0; g<totalGrids; g++) {
-                if(fimGrids[g]) continue;
-                let r = RESPOSTAS[g], tempR = r.split(""), acertos = 0;
-                for(let i=0; i<5; i++) {
-                    let t = document.getElementById(`g${g}-t${row*5+i}`);
-                    if(s[i] === r[i]) {
-                        t.classList.add('c'); tempR[i] = null; acertos++;
-                        document.getElementById(`key-${s[i]}`).classList.add('key-correct');
-                    }
+        function verificar() {
+            let s = chute.join(""), r = resposta, tempR = r.split(""), acertos = 0;
+            for(let i=0; i<5; i++) {
+                let t = document.getElementById("t"+(row*5+i));
+                if(s[i] === r[i]) {
+                    t.classList.add("c"); tempR[i] = null; acertos++;
                 }
-                for(let i=0; i<5; i++) {
-                    let t = document.getElementById(`g${g}-t${row*5+i}`);
-                    if(t.classList.contains('c')) continue;
-                    if(tempR.includes(s[i])) {
-                        t.classList.add('p'); tempR[tempR.indexOf(s[i])] = null;
-                        if(!document.getElementById(`key-${s[i]}`).classList.contains('key-correct'))
-                            document.getElementById(`key-${s[i]}`).classList.add('key-present');
-                    } else {
-                        t.classList.add('a');
-                        if(!document.getElementById(`key-${s[i]}`).classList.contains('key-correct'))
-                            document.getElementById(`key-${s[i]}`).classList.add('key-absent');
-                    }
-                }
-                if(acertos === 5) { fimGrids[g] = true; document.getElementById(`grid-${g}`).classList.add('done'); }
             }
-            if(fimGrids.every(x => x)) { showToast("🏆 VOCÊ VENCEU! 🏆"); setTimeout(novoJogo, 4000); }
+            for(let i=0; i<5; i++) {
+                let t = document.getElementById("t"+(row*5+i));
+                if(t.classList.contains("c")) continue;
+                if(tempR.includes(s[i])) {
+                    t.classList.add("p"); tempR[tempR.indexOf(s[i])] = null;
+                } else { t.classList.add("a"); }
+            }
+            if(acertos === 5) { msg("VENCEU! 🏆"); fim = true; setTimeout(iniciar, 4000); }
             else {
                 row++; col = 0; chute = ["", "", "", "", ""];
-                if(row === maxTents) { showToast("RESPOSTAS:<br>" + RESPOSTAS.join(" | ")); setTimeout(novoJogo, 5000); }
-            }
-            updateUI();
-        }
-
-        function updateUI() {
-            document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
-            for(let g=0; g<totalGrids; g++) {
-                if(!fimGrids[g] && row < maxTents) {
-                    let t = document.getElementById(`g${g}-t${row*5+col}`);
-                    if(t) t.classList.add('selected');
-                }
+                if(row === 6) { msg("FIM! RESPOSTA: " + resposta); fim = true; setTimeout(iniciar, 5000); }
             }
         }
 
-        function showToast(m) {
+        function attUI() {
+            for(let i=0; i<30; i++) document.getElementById("t"+i).classList.remove("selected");
+            if(!fim) document.getElementById("t"+(row*5+col)).classList.add("selected");
+        }
+
+        function msg(m) {
             const t = document.getElementById('toast');
-            t.innerHTML = m; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+            t.innerText = m; t.style.display = "block";
+            setTimeout(() => t.style.display = "none", 3000);
         }
     </script>
 </body>
 </html>
-

@@ -8,35 +8,25 @@
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
-        
-        /* LOGIN */
         #login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; }
         input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; }
         .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-        /* CABEÇALHO */
         header { width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.1); }
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 5px; }
         .modes { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
         .m-btn { background: rgba(0,0,0,0.2); border: 1px solid white; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.7rem; }
         .active { background: white; color: var(--bg); }
-
-        /* AREA DO JOGO */
         #container { flex: 1; display: grid; gap: 10px; padding: 15px; justify-content: center; align-content: center; width: 100%; }
         .grid { display: grid; gap: 5px; }
         .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; }
         .selected { border-color: white !important; }
         .dueto-layout { grid-template-columns: 1fr 1fr; max-width: 95vw; }
         .dueto-layout .tile { width: clamp(35px, 9vw, 45px); font-size: 1.5rem; }
-
-        /* TECLADO */
         .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.1); }
         .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
         .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1.1rem; flex: 1; text-align: center; }
         .key.wide { flex: 1.5; font-size: 0.8rem; }
-
-        /* CORES RESULTADO */
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
         .a { background: var(--absent) !important; border: none; }
@@ -44,7 +34,6 @@
         .key-present { background: var(--present) !important; }
         .key-absent { background: #312a2c !important; opacity: 0.5; }
         .done { opacity: 0.4; pointer-events: none; }
-
         #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
@@ -76,8 +65,8 @@
     </div>
 
     <script>
-        // Lista expandida para evitar bloqueios injustos
-        const PALAVRAS_ACEITAS = ["TERMO", "PRATO", "PASTO", "LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "BANCO", "CAIXA", "COFRE", "ATIVO", "VALOR", "PLANO", "SORTE", "ARENA", "MUNDO", "SAGAZ", "TEMPO", "VIVER", "SABER", "FORTE", "CHAVE", "PEDRA", "BRASIL", "NOITE", "LETRA", "LIVRO", "CORPO", "MENTE", "SONHO", "PROVA", "VENTO", "GRITO", "CANTO", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO", "PORTA", "MESAS", "GATOS", "FESTA", "FOGO", "AGUA", "TERRA", "VENTO"];
+        // DICIONÁRIO AMPLIADO (BRASIL TODO)
+        const PALAVRAS_ACEITAS = ["SAGAZ", "AMAGO", "NEGRO", "TERMO", "EXITO", "MEXER", "NOBRE", "SENSO", "AFETO", "ALGOZ", "ETICA", "VIGOR", "FATO", "FAZER", "IDEIA", "PODER", "MORAL", "MUITO", "HONRA", "JUSTO", "SOBRE", "DORME", "INDIO", "FOCO", "SONHO", "RAZAO", "QUERER", "ETNIA", "ICONE", "MUNDO", "TEMPO", "PLENO", "CERTO", "VULGO", "DIZER", "BANAL", "FORTE", "PESSOA", "CAUSA", "ASSIM", "PONTO", "ORDEM", "BELO", "LUGAR", "VALOR", "GRACA", "FELIZ", "MESMO", "VIVER", "PLANO", "ATIVO", "ARENA", "SORTE", "LETRA", "BRASIL", "PEDRA", "CHAVE", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO", "PORTA", "MESAS", "GATOS", "FESTA", "FOGO", "AGUA", "TERRA", "VENTO", "MUDAR", "POETA", "ROUPA", "FALTA", "DENTE", "PROVA", "GRITO", "CANTO", "MENTE", "CORPO", "LIVRO", "NOITE", "VISTA", "SOLAR", "LUNAR", "CAMPO", "CHAMA", "BRISA", "MARCO", "POSTO", "TREM", "CALOR", "FRIO", "PASSO", "BATER", "CAIXA", "BANCO", "COFRE", "LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "SENDO", "ESTAR", "HAVER", "POIS", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "MUITO", "VAGO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "FORA", "DENTRO", "CASA", "VIDA", "LEVAR", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "FRENTE", "ATRAS", "LONGE", "PERTO", "CHÃO", "CÉU", "OURO", "PRATA", "BRONZE", "COPA", "JOGO", "DADO", "META", "ALVO", "FIM", "INICIO", "MEIO", "DOZE", "TREZE", "ANOS", "MESES", "DIA", "HORA", "MINUTO", "AGORA", "ONDE", "COMO", "QUEM", "QUAL", "POUCO", "GRANDE", "PEQUENO", "BONITO", "FEIO", "DOIDO", "SABIO", "SABER", "PENSAR", "AMAR", "ODIO", "PAZ", "GUERRA", "MAR", "RIO", "FLUXO", "AREA", "FORÇA", "PESO", "MASSA", "LUZ", "SOM", "VOZ", "CORA", "CARA", "MÃO", "PÉ", "OLHO", "OUVI", "OUÇA", "DOR", "RISO", "PEITO", "BRAÇO", "PERNA", "DEDO", "UNHA", "CABO", "COLO", "COURO", "PELO", "PELE", "SANGUE", "OSSOS", "CARNE", "NERVO", "VEIA", "FLOR", "FRUTA", "CAFE", "PÃO", "DOCE", "SAL", "MEL", "VINHO", "ÁGUA", "LEITE", "SUCO", "CHÁ", "SOPA", "BOLO", "OVO", "CARNE", "PEIXE", "AVE", "BOI", "VACA", "GATO", "CÃO", "RATO", "LOBO", "LEÃO", "URSO", "COBRA", "SAPO", "PEIXE", "MAR", "ONDAS", "PRAIA", "AREIA", "SOL", "LUA", "ESTRELA", "CÉU", "NUVEM", "CHUVA", "NEVE", "GELO", "FOGO", "CHAMA", "FUMAÇA", "CINZA", "PEDRA", "OURO", "PRATA", "COBRE", "FERRO", "AÇO", "MADEIRA", "PAPEL", "TELA", "COR", "VERDE", "AZUL", "ROXO", "ROSA", "AMARELO", "BRANCO", "PRETO", "CINZA", "MARROM", "CORES", "SOM", "VOZ", "CANTO", "MUSICA", "ARPA", "VIOLA", "PIANO", "TAMBOR", "RITMO", "DANÇA", "PASSO", "SALTO", "VOLTA", "GIRO", "QUEDA", "SUBIDA", "DESCIDA", "ALTO", "BAIXO", "LONGE", "PERTO", "AQUI", "ALI", "LÁ", "ONDE", "COMO", "QUANDO", "QUEM", "QUAL", "TUDO", "NADA", "ALGO", "POUCO", "MUITO", "MAIS", "MENOS", "IGUAL", "DIFER"];
 
         let RESPOSTAS = [], fimGrids = [], totalGrids = 1, maxTents = 6, row = 0, col = 0, chute = ["", "", "", "", ""];
 
@@ -100,7 +89,7 @@
             row = 0; col = 0; chute = ["", "", "", "", ""];
             RESPOSTAS = []; fimGrids = new Array(totalGrids).fill(false);
             for(let i=0; i<totalGrids; i++) {
-                let p; do { p = PALAVRAS_ACEITAS[Math.floor(Math.random()*PALAVRAS_ACEITAS.length)]; } while(RESPOSTAS.includes(p));
+                let p; do { p = PALAVRAS_ACEITAS[Math.floor(Math.random()*PALAVRAS_ACEITAS.length)]; } while(RESPOSTAS.includes(p) || p.length != 5);
                 RESPOSTAS.push(p);
             }
             const cont = document.getElementById('container');
@@ -145,10 +134,9 @@
                 chute[col] = "";
                 for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = "";
             } else if(l === 'ENTER') {
-                let palavraFinal = chute.join("");
-                if(palavraFinal.length < 5) return showToast("PALAVRA INCOMPLETA");
-                // TRAVA DE SEGURANÇA AQUI:
-                if(!PALAVRAS_ACEITAS.includes(palavraFinal)) return showToast("ESTA PALAVRA NÃO EXISTE");
+                let pFinal = chute.join("");
+                if(pFinal.length < 5) return showToast("PALAVRA INCOMPLETA");
+                if(!PALAVRAS_ACEITAS.includes(pFinal)) return showToast("PALAVRA NÃO ACEITA");
                 processarEnvio();
             } else if(col < 5) {
                 chute[col] = l;
@@ -185,10 +173,10 @@
                 }
                 if(acertos === 5) { fimGrids[g] = true; document.getElementById(`grid-${g}`).classList.add('done'); }
             }
-            if(fimGrids.every(x => x)) { showToast("VOCÊ VENCEU! 🏆"); setTimeout(novoJogo, 3000); }
+            if(fimGrids.every(x => x)) { showToast("VENCEU! 🏆"); setTimeout(novoJogo, 3000); }
             else {
                 row++; col = 0; chute = ["", "", "", "", ""];
-                if(row === maxTents) { showToast("FIM! RESPOSTA: " + RESPOSTAS.join(" | ")); setTimeout(novoJogo, 4000); }
+                if(row === maxTents) { showToast("RESPOSTA: " + RESPOSTAS.join(" | ")); setTimeout(novoJogo, 4000); }
             }
             updateUI();
         }

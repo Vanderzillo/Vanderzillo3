@@ -144,4 +144,77 @@
                 b.className = (k === 'ENTER' || k === 'DEL') ? 'key wide' : 'key';
                 b.innerText = k === 'DEL' ? '⌫' : k;
                 b.onclick = () => clicarTecla(k);
-                
+                rowEl.appendChild(b);
+            });
+        });
+
+        function clicarTecla(l) {
+            if(fimGrids.every(x => x)) return;
+            if(l === 'DEL') {
+                chute[col] = "";
+                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = "";
+                if(col > 0) col--;
+            } else if(l === 'ENTER') {
+                let p = chute.join("");
+                if(p.length < 5 || chute.includes("")) return showToast("FALTAM LETRAS");
+                if(DICIONARIO_COMPLETO.length > 0 && !DICIONARIO_COMPLETO.includes(p)) return showToast("PALAVRA INVÁLIDA");
+                processarEnvio();
+            } else {
+                chute[col] = l;
+                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = l;
+                if(col < 4) col++;
+            }
+            updateUI();
+        }
+
+        function processarEnvio() {
+            let s = chute.join("");
+            for(let g=0; g<totalGrids; g++) {
+                if(fimGrids[g]) continue;
+                let r = RESPOSTAS[g], tempR = r.split(""), acertos = 0;
+                for(let i=0; i<5; i++) {
+                    let t = document.getElementById(`g${g}-t${row*5+i}`);
+                    if(s[i] === r[i]) {
+                        t.classList.add('c'); tempR[i] = null; acertos++;
+                        document.getElementById(`key-${s[i]}`)?.classList.add('key-correct');
+                    }
+                }
+                for(let i=0; i<5; i++) {
+                    let t = document.getElementById(`g${g}-t${row*5+i}`);
+                    if(t.classList.contains('c')) continue;
+                    if(tempR.includes(s[i])) {
+                        t.classList.add('p'); tempR[tempR.indexOf(s[i])] = null;
+                        document.getElementById(`key-${s[i]}`)?.classList.add('key-present');
+                    } else {
+                        t.classList.add('a');
+                        document.getElementById(`key-${s[i]}`)?.classList.add('key-absent');
+                    }
+                }
+                if(acertos === 5) { fimGrids[g] = true; document.getElementById(`grid-${g}`).classList.add('done'); }
+            }
+            if(fimGrids.every(x => x)) { showToast("🏆 VOCÊ VENCEU! 🏆"); setTimeout(novoJogo, 4000); }
+            else {
+                row++; col = 0; chute = ["", "", "", "", ""];
+                if(row === maxTents) { showToast("RESPOSTAS:<br>" + RESPOSTAS.join(" | ")); setTimeout(novoJogo, 5000); }
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
+            for(let g=0; g<totalGrids; g++) {
+                if(!fimGrids[g] && row < maxTents) {
+                    let t = document.getElementById(`g${g}-t${row*5+col}`);
+                    if(t) t.classList.add('selected');
+                }
+            }
+        }
+
+        function showToast(m) {
+            const t = document.getElementById('toast');
+            t.innerHTML = m; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>

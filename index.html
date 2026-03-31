@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena - V1.5</title>
+    <title>Termo Arena - V1.6</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
@@ -30,7 +30,6 @@
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
         .a { background: var(--absent) !important; border: none; }
-        
         #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; text-align: center; }
     </style>
 </head>
@@ -55,8 +54,8 @@
     </div>
 
     <script>
-        // LISTA AMPLIADA PARA ACEITAÇÃO IMEDIATA
-        const DICIONARIO_VIP = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO", "CORPO", "MENTE", "NOITE", "VISTA", "CAMPO", "CHAMA", "TREM", "CALOR", "FRIO", "PASSO", "BATER", "SENDO", "ESTAR", "HAVER", "POIS", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "FORA", "VIDA", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "OURO", "PRATA", "COPA", "JOGO", "DADO", "META", "ALVO", "FIM", "DIA", "HORA", "ONDE", "COMO", "QUEM", "QUAL", "PAZ", "MAR", "RIO", "AREA", "LUZ", "SOM", "VOZ", "DOR", "RISO", "DEDO", "FLOR", "FRUTA", "CAFE", "DOCE", "SAL", "MEL", "BOLO", "OVO", "AVE", "BOI", "VACA", "RATO", "LOBO", "SAPO", "SOL", "LUA", "AÇO", "TELA", "COR", "VERDE", "AZUL", "ROXO", "ROSA", "BOLA", "GOL", "TIME", "REDE", "BASE", "TOPO", "FASE", "OBRA", "ARTE", "VAGA", "TEXTO", "SITE", "BLOG", "APP", "CHAT", "BOT", "FIO", "PLAY", "SAIR", "IR", "FICA", "TRAZ", "LEVA", "COME", "BEBE", "FALA", "OUVE", "OLHA", "PEGA", "PARA", "ANDA", "CORRE", "PULA", "BATE", "COLA", "PISA", "REZA", "JURO"];
+        // LISTA DE SEGURANÇA (CONFIRMAÇÃO INSTANTÂNEA)
+        const VIP = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO", "CORPO", "MENTE", "NOITE", "VISTA", "CAMPO", "CHAMA", "TREM", "CALOR", "FRIO", "PASSO", "BATER", "SENDO", "ESTAR", "HAVER", "POIS", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "FORA", "VIDA", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "OURO", "PRATA", "COPA", "JOGO", "DADO", "META", "ALVO", "FIM", "DIA", "HORA", "ONDE", "COMO", "QUEM", "QUAL", "PAZ", "MAR", "RIO", "AREA", "LUZ", "SOM", "VOZ", "DOR", "RISO", "DEDO", "FLOR", "FRUTA", "CAFE", "DOCE", "SAL", "MEL", "BOLO", "OVO", "AVE", "BOI", "VACA", "RATO", "LOBO", "SAPO", "SOL", "LUA", "AÇO", "TELA", "COR", "VERDE", "AZUL", "ROXO", "ROSA", "BOLA", "GOL", "TIME", "REDE", "BASE", "TOPO", "FASE", "OBRA", "ARTE", "VAGA", "TEXTO", "SITE", "BLOG", "APP", "CHAT", "BOT", "FIO", "PLAY", "SAIR", "IR", "FICA", "TRAZ", "LEVA", "COME", "BEBE", "FALA", "OUVE", "OLHA", "PEGA", "PARA", "ANDA", "CORRE", "PULA", "BATE", "COLA", "PISA", "REZA", "JURO"];
 
         let resposta = "", row = 0, col = 0, chute = ["", "", "", "", ""], fim = false;
 
@@ -70,7 +69,7 @@
 
         function novoJogo() {
             row = 0; col = 0; chute = ["", "", "", "", ""]; fim = false;
-            resposta = DICIONARIO_VIP[Math.floor(Math.random() * DICIONARIO_VIP.length)];
+            resposta = VIP[Math.floor(Math.random() * VIP.length)];
             const cont = document.getElementById('container');
             cont.innerHTML = "";
             let g = document.createElement('div');
@@ -87,8 +86,8 @@
         }
 
         function montarTeclado() {
-            const layout = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
-            layout.forEach((r, idx) => {
+            const rows = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
+            rows.forEach((r, idx) => {
                 const rowEl = document.getElementById('row'+(idx+1));
                 rowEl.innerHTML = "";
                 r.forEach(k => {
@@ -101,17 +100,6 @@
             });
         }
 
-        async function validarPalavra(p) {
-            // 1. Tenta na lista VIP (instantâneo)
-            if(DICIONARIO_VIP.includes(p)) return true;
-            // 2. Tenta na API (internet)
-            try {
-                const res = await fetch(`https://api.dicionario-aberto.net/word/${p.toLowerCase()}`);
-                const data = await res.json();
-                return data.length > 0;
-            } catch (e) { return true; } // Deixa passar se a internet falhar
-        }
-
         async function clicarTecla(k) {
             if(fim) return;
             let idx = row * 5 + col;
@@ -122,10 +110,20 @@
             } else if(k === 'ENTER') {
                 let p = chute.join("");
                 if(p.length < 5) return showToast("FALTAM LETRAS");
-                showToast("CONFERINDO...");
-                const ok = await validarPalavra(p);
-                if(ok) processarEnvio();
-                else showToast("PALAVRA NÃO EXISTE");
+                
+                // CHECAGEM PRIORITÁRIA (LISTA VIP)
+                if(VIP.includes(p)) {
+                    processarEnvio();
+                } else {
+                    // SE NÃO ESTIVER NA VIP, TENTA API
+                    showToast("CONFERINDO...");
+                    try {
+                        const res = await fetch(`https://api.dicionario-aberto.net/word/${p.toLowerCase()}`);
+                        const data = await res.json();
+                        if(data.length > 0) processarEnvio();
+                        else showToast("PALAVRA INVÁLIDA");
+                    } catch(e) { processarEnvio(); } // Se internet falhar, deixa passar
+                }
             } else if(col < 5) {
                 chute[col] = k;
                 document.getElementById("t"+idx).innerText = k;

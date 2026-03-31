@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena - Teclado Final</title>
+    <title>Termo Arena - Teclado Invertido</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
@@ -26,7 +26,6 @@
         .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; }
         .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; cursor: pointer; text-transform: uppercase; }
         
-        /* Ajuste para as teclas especiais */
         .key-special { flex: 1.5; background: #565859; font-size: 0.8rem; }
 
         .c { background: var(--correct) !important; border: none; }
@@ -89,6 +88,7 @@
         function montarTeclado() {
             const r1 = ["Q","W","E","R","T","Y","U","I","O","P"];
             const r2 = ["A","S","D","F","G","H","J","K","L"];
+            // AQUI ESTÁ A INVERSÃO: DEL NA ESQUERDA, LETRAS NO MEIO, ENTER NA DIREITA
             const r3 = ["DEL","Z","X","C","V","B","N","M","ENTER"];
             
             const rows = [r1, r2, r3];
@@ -98,7 +98,6 @@
                 rowArr.forEach(k => {
                     let b = document.createElement('button');
                     b.innerText = k === "DEL" ? "⌫" : k;
-                    // Se for DEL ou ENTER, coloca a classe especial para o tamanho
                     b.className = (k === "DEL" || k === "ENTER") ? "key key-special" : "key";
                     b.onclick = () => clicarTecla(k);
                     rowEl.appendChild(b);

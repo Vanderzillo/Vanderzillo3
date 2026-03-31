@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena - Teclado Ajustado</title>
+    <title>Termo Arena - Teclado Final</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
@@ -23,9 +23,11 @@
         .selected { border: 4px solid white !important; transform: scale(1.05); }
         
         .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.2); }
-        .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; width: 100%; }
-        .key { background: #818384; border: none; color: white; padding: 18px 0; border-radius: 4px; font-weight: bold; font-size: 1.1rem; flex: 1; text-align: center; cursor: pointer; }
-        .key.wide { flex: 1.5; font-size: 0.8rem; }
+        .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; cursor: pointer; text-transform: uppercase; }
+        
+        /* Ajuste para as teclas especiais */
+        .key-special { flex: 1.5; background: #565859; font-size: 0.8rem; }
 
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
@@ -85,20 +87,19 @@
         }
 
         function montarTeclado() {
-            // Teclado atualizado: DELETE na esquerda e ENTER na direita da última linha
-            const layout = [
-                ["Q","W","E","R","T","Y","U","I","O","P"],
-                ["A","S","D","F","G","H","J","K","L"],
-                ["DEL","Z","X","C","V","B","N","M","ENTER"]
-            ];
+            const r1 = ["Q","W","E","R","T","Y","U","I","O","P"];
+            const r2 = ["A","S","D","F","G","H","J","K","L"];
+            const r3 = ["DEL","Z","X","C","V","B","N","M","ENTER"];
             
-            layout.forEach((r, idx) => {
+            const rows = [r1, r2, r3];
+            rows.forEach((rowArr, idx) => {
                 const rowEl = document.getElementById('row'+(idx+1));
                 rowEl.innerHTML = "";
-                r.forEach(k => {
+                rowArr.forEach(k => {
                     let b = document.createElement('button');
-                    b.className = (k.length > 1) ? "key wide" : "key";
                     b.innerText = k === "DEL" ? "⌫" : k;
+                    // Se for DEL ou ENTER, coloca a classe especial para o tamanho
+                    b.className = (k === "DEL" || k === "ENTER") ? "key key-special" : "key";
                     b.onclick = () => clicarTecla(k);
                     rowEl.appendChild(b);
                 });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena - V1.6</title>
+    <title>Termo Arena Pro</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
@@ -54,8 +54,8 @@
     </div>
 
     <script>
-        // LISTA DE SEGURANÇA (CONFIRMAÇÃO INSTANTÂNEA)
-        const VIP = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO", "CORPO", "MENTE", "NOITE", "VISTA", "CAMPO", "CHAMA", "TREM", "CALOR", "FRIO", "PASSO", "BATER", "SENDO", "ESTAR", "HAVER", "POIS", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "FORA", "VIDA", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "OURO", "PRATA", "COPA", "JOGO", "DADO", "META", "ALVO", "FIM", "DIA", "HORA", "ONDE", "COMO", "QUEM", "QUAL", "PAZ", "MAR", "RIO", "AREA", "LUZ", "SOM", "VOZ", "DOR", "RISO", "DEDO", "FLOR", "FRUTA", "CAFE", "DOCE", "SAL", "MEL", "BOLO", "OVO", "AVE", "BOI", "VACA", "RATO", "LOBO", "SAPO", "SOL", "LUA", "AÇO", "TELA", "COR", "VERDE", "AZUL", "ROXO", "ROSA", "BOLA", "GOL", "TIME", "REDE", "BASE", "TOPO", "FASE", "OBRA", "ARTE", "VAGA", "TEXTO", "SITE", "BLOG", "APP", "CHAT", "BOT", "FIO", "PLAY", "SAIR", "IR", "FICA", "TRAZ", "LEVA", "COME", "BEBE", "FALA", "OUVE", "OLHA", "PEGA", "PARA", "ANDA", "CORRE", "PULA", "BATE", "COLA", "PISA", "REZA", "JURO"];
+        // LISTA DE PALAVRAS QUE PODEM SER A RESPOSTA (Sorteio)
+        const RESPOSTAS_POSSIVEIS = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO"];
 
         let resposta = "", row = 0, col = 0, chute = ["", "", "", "", ""], fim = false;
 
@@ -69,7 +69,7 @@
 
         function novoJogo() {
             row = 0; col = 0; chute = ["", "", "", "", ""]; fim = false;
-            resposta = VIP[Math.floor(Math.random() * VIP.length)];
+            resposta = RESPOSTAS_POSSIVEIS[Math.floor(Math.random() * RESPOSTAS_POSSIVEIS.length)];
             const cont = document.getElementById('container');
             cont.innerHTML = "";
             let g = document.createElement('div');
@@ -100,7 +100,7 @@
             });
         }
 
-        async function clicarTecla(k) {
+        function clicarTecla(k) {
             if(fim) return;
             let idx = row * 5 + col;
             if(k === 'DEL') {
@@ -111,19 +111,9 @@
                 let p = chute.join("");
                 if(p.length < 5) return showToast("FALTAM LETRAS");
                 
-                // CHECAGEM PRIORITÁRIA (LISTA VIP)
-                if(VIP.includes(p)) {
-                    processarEnvio();
-                } else {
-                    // SE NÃO ESTIVER NA VIP, TENTA API
-                    showToast("CONFERINDO...");
-                    try {
-                        const res = await fetch(`https://api.dicionario-aberto.net/word/${p.toLowerCase()}`);
-                        const data = await res.json();
-                        if(data.length > 0) processarEnvio();
-                        else showToast("PALAVRA INVÁLIDA");
-                    } catch(e) { processarEnvio(); } // Se internet falhar, deixa passar
-                }
+                // VALIDAR É SEMPRE VERDADEIRO AGORA PARA NÃO TRAVAR O JOGADOR
+                processarEnvio();
+                
             } else if(col < 5) {
                 chute[col] = k;
                 document.getElementById("t"+idx).innerText = k;
@@ -134,12 +124,14 @@
 
         function processarEnvio() {
             let s = chute.join(""), r = resposta, tempR = r.split(""), acertos = 0;
+            // Primeira passada: Verdes
             for(let i=0; i<5; i++) {
                 let t = document.getElementById("t"+(row*5+i));
                 if(s[i] === r[i]) {
                     t.classList.add("c"); tempR[i] = null; acertos++;
                 }
             }
+            // Segunda passada: Amarelos e Cinzas
             for(let i=0; i<5; i++) {
                 let t = document.getElementById("t"+(row*5+i));
                 if(t.classList.contains("c")) continue;
@@ -156,7 +148,10 @@
 
         function updateUI() {
             document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
-            if(!fim) document.getElementById("t"+(row*5+col)).classList.add('selected');
+            if(!fim) {
+                const target = document.getElementById("t"+(row*5+col));
+                if(target) target.classList.add('selected');
+            }
         }
 
         function showToast(m) {

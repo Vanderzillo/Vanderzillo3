@@ -3,49 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena Pro</title>
+    <title>Termo Arena - Protótipo Final</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
         
-        /* LOGIN */
         #login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; }
-        input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; }
-        .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; text-transform: uppercase; }
+        .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        /* CABEÇALHO */
         header { width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.1); }
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 5px; }
-        .modes { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
-        .m-btn { background: rgba(0,0,0,0.2); border: 1px solid white; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.7rem; }
-        .active { background: white; color: var(--bg); }
-
-        /* AREA DO JOGO */
+        
         #container { flex: 1; display: grid; gap: 10px; padding: 15px; justify-content: center; align-content: center; width: 100%; }
         .grid { display: grid; gap: 5px; }
-        .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; }
-        .selected { border-color: white !important; }
-        .dueto-layout { grid-template-columns: 1fr 1fr; max-width: 95vw; }
-        .dueto-layout .tile { width: clamp(35px, 9vw, 45px); font-size: 1.5rem; }
-
-        /* TECLADO */
-        .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.1); }
+        .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; cursor: pointer; transition: 0.1s; }
+        .selected { border: 4px solid white !important; transform: scale(1.05); z-index: 10; }
+        
+        .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.2); }
         .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
-        .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1.1rem; flex: 1; text-align: center; }
+        .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1.1rem; flex: 1; text-align: center; cursor: pointer; }
         .key.wide { flex: 1.5; font-size: 0.8rem; }
 
-        /* CORES RESULTADO */
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
-        .a { background: var(--absent) !important; border: none; }
-        .key-correct { background: var(--correct) !important; }
-        .key-present { background: var(--present) !important; }
-        .key-absent { background: #312a2c !important; opacity: 0.5; }
-        .done { opacity: 0.4; pointer-events: none; }
-
-        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .a { background: var(--absent) !important; border: none; opacity: 0.5; }
+        
+        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -53,17 +39,13 @@
     <div id="login">
         <div class="card">
             <h1 style="letter-spacing:5px; margin-bottom:20px">TERMO</h1>
-            <input type="text" id="nick" placeholder="SEU NOME">
+            <input type="text" id="nick" placeholder="SEU NOME" autocomplete="off">
             <button class="btn-entrar" onclick="entrar()">JOGAR AGORA</button>
         </div>
     </div>
 
     <header id="h-game" style="display:none">
         <div class="logo">TERMO</div>
-        <div class="modes">
-            <button id="b1" class="m-btn active" onclick="mudarModo(1, 6, 'b1')">SOLO</button>
-            <button id="b2" class="m-btn" onclick="mudarModo(2, 9, 'b2')">DUETO</button>
-        </div>
     </header>
 
     <div id="toast"></div>
@@ -76,128 +58,108 @@
     </div>
 
     <script>
-        // Lista expandida para evitar bloqueios injustos
-        const PALAVRAS_ACEITAS = ["TERMO", "PRATO", "PASTO", "LUCRO", "JUROS", "BOLSA", "RENDA", "VERBA", "BANCO", "CAIXA", "COFRE", "ATIVO", "VALOR", "PLANO", "SORTE", "ARENA", "MUNDO", "SAGAZ", "TEMPO", "VIVER", "SABER", "FORTE", "CHAVE", "PEDRA", "BRASIL", "NOITE", "LETRA", "LIVRO", "CORPO", "MENTE", "SONHO", "PROVA", "VENTO", "GRITO", "CANTO", "NAVIO", "ALMAS", "TIGRE", "VERBO", "FRASE", "TINTA", "BARCO", "PEIXE", "LIMPO", "SUSTO", "DOCES", "PONTE", "FERRO", "PORTA", "MESAS", "GATOS", "FESTA", "FOGO", "AGUA", "TERRA", "VENTO"];
+        // LISTA DE SEGURANÇA (Garante que palavras comuns e plurais passem sem internet)
+        const INTERNA = ["MESAS", "CASAS", "GATOS", "LIVROS", "PRATOS", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO"];
 
-        let RESPOSTAS = [], fimGrids = [], totalGrids = 1, maxTents = 6, row = 0, col = 0, chute = ["", "", "", "", ""];
+        let resposta = "", row = 0, col = 0, chute = ["", "", "", "", ""], fim = false;
 
         function entrar() {
-            if(!document.getElementById('nick').value) return;
+            const nick = document.getElementById('nick').value;
+            if(!nick) return alert("Digite seu nome!");
             document.getElementById('login').style.display = 'none';
             document.getElementById('h-game').style.display = 'block';
             document.getElementById('kb-game').style.display = 'block';
             novoJogo();
         }
 
-        function mudarModo(n, t, id) {
-            totalGrids = n; maxTents = t;
-            document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            novoJogo();
-        }
-
         function novoJogo() {
-            row = 0; col = 0; chute = ["", "", "", "", ""];
-            RESPOSTAS = []; fimGrids = new Array(totalGrids).fill(false);
-            for(let i=0; i<totalGrids; i++) {
-                let p; do { p = PALAVRAS_ACEITAS[Math.floor(Math.random()*PALAVRAS_ACEITAS.length)]; } while(RESPOSTAS.includes(p));
-                RESPOSTAS.push(p);
-            }
+            row = 0; col = 0; chute = ["", "", "", "", ""]; fim = false;
+            resposta = INTERNA[Math.floor(Math.random() * INTERNA.length)].toUpperCase();
             const cont = document.getElementById('container');
             cont.innerHTML = "";
-            cont.className = totalGrids === 1 ? "" : "dueto-layout";
-
-            for(let g=0; g<totalGrids; g++) {
-                let d = document.createElement('div');
-                d.className = "grid"; d.id = `grid-${g}`;
-                d.style.gridTemplateRows = `repeat(${maxTents}, 1fr)`;
-                d.style.gridTemplateColumns = "repeat(5, 1fr)";
-                for(let i=0; i<maxTents*5; i++) {
-                    let t = document.createElement('div'); t.className = "tile"; t.id = `g${g}-t${i}`;
-                    d.appendChild(t);
-                }
-                cont.appendChild(d);
+            let g = document.createElement('div');
+            g.className = "grid";
+            g.style.gridTemplateColumns = "repeat(5, 1fr)";
+            for(let i=0; i<30; i++) {
+                let t = document.createElement('div');
+                t.className = "tile"; t.id = "t"+i;
+                t.onclick = () => { if(!fim && Math.floor(i/5) === row) { col = i%5; updateUI(); } };
+                g.appendChild(t);
             }
-            limparTeclado(); updateUI();
+            cont.appendChild(g);
+            montarTeclado(); updateUI();
         }
 
-        function limparTeclado() {
-            document.querySelectorAll('.key').forEach(k => k.classList.remove('key-correct', 'key-present', 'key-absent'));
-        }
-
-        const layoutTeclado = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
-        layoutTeclado.forEach((r, i) => {
-            const rowEl = document.getElementById('row'+(i+1));
-            rowEl.innerHTML = "";
-            r.forEach(k => {
-                let b = document.createElement('button');
-                b.className = (k === 'ENTER' || k === 'DEL') ? 'key wide' : 'key';
-                b.id = `key-${k}`; b.innerText = k === 'DEL' ? '⌫' : k;
-                b.onclick = () => clicarTecla(k);
-                rowEl.appendChild(b);
+        function montarTeclado() {
+            const layout = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];
+            layout.forEach((r, idx) => {
+                const rowEl = document.getElementById('row'+(idx+1));
+                rowEl.innerHTML = "";
+                r.forEach(k => {
+                    let b = document.createElement('button');
+                    b.className = (k.length > 1) ? "key wide" : "key";
+                    b.innerText = k === "DEL" ? "⌫" : k;
+                    b.onclick = () => clicarTecla(k);
+                    rowEl.appendChild(b);
+                });
             });
-        });
+        }
 
-        function clicarTecla(l) {
-            if(fimGrids.every(x => x)) return;
-            if(l === 'DEL') {
-                if(chute[col] === "" && col > 0) col--;
+        async function validar(p) {
+            if(INTERNA.includes(p)) return true; // Se está na lista de segurança, passa direto
+            try {
+                const res = await fetch(`https://api.dicionario-aberto.net/word/${p.toLowerCase()}`);
+                const data = await res.json();
+                return data.length > 0;
+            } catch (e) { return true; } // Se a internet falhar, deixa passar para não travar o jogo
+        }
+
+        async function clicarTecla(k) {
+            if(fim) return;
+            let index = row * 5 + col;
+            if(k === 'DEL') {
                 chute[col] = "";
-                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = "";
-            } else if(l === 'ENTER') {
-                let palavraFinal = chute.join("");
-                if(palavraFinal.length < 5) return showToast("PALAVRA INCOMPLETA");
-                // TRAVA DE SEGURANÇA AQUI:
-                if(!PALAVRAS_ACEITAS.includes(palavraFinal)) return showToast("ESTA PALAVRA NÃO EXISTE");
-                processarEnvio();
+                document.getElementById("t"+index).innerText = "";
+                if(col > 0) col--;
+            } else if(k === 'ENTER') {
+                let p = chute.join("");
+                if(p.length < 5) return showToast("FALTAM LETRAS");
+                showToast("VERIFICANDO...");
+                if(await validar(p)) processarEnvio();
+                else showToast("PALAVRA INVÁLIDA");
             } else if(col < 5) {
-                chute[col] = l;
-                for(let g=0; g<totalGrids; g++) if(!fimGrids[g]) document.getElementById(`g${g}-t${row*5+col}`).innerText = l;
+                chute[col] = k;
+                document.getElementById("t"+index).innerText = k;
                 if(col < 4) col++;
             }
             updateUI();
         }
 
         function processarEnvio() {
-            let s = chute.join("");
-            for(let g=0; g<totalGrids; g++) {
-                if(fimGrids[g]) continue;
-                let r = RESPOSTAS[g], tempR = r.split(""), acertos = 0;
-                for(let i=0; i<5; i++) {
-                    let t = document.getElementById(`g${g}-t${row*5+i}`);
-                    let k = document.getElementById(`key-${s[i]}`);
-                    if(s[i] === r[i]) {
-                        t.classList.add('c'); tempR[i] = null; acertos++;
-                        k.classList.add('key-correct');
-                    }
+            let s = chute.join(""), r = resposta, tempR = r.split(""), acertos = 0;
+            for(let i=0; i<5; i++) {
+                let t = document.getElementById("t"+(row*5+i));
+                if(s[i] === r[i]) {
+                    t.classList.add("c"); tempR[i] = null; acertos++;
                 }
-                for(let i=0; i<5; i++) {
-                    let t = document.getElementById(`g${g}-t${row*5+i}`);
-                    let k = document.getElementById(`key-${s[i]}`);
-                    if(t.classList.contains('c')) continue;
-                    if(tempR.includes(s[i])) {
-                        t.classList.add('p'); tempR[tempR.indexOf(s[i])] = null;
-                        if(!k.classList.contains('key-correct')) k.classList.add('key-present');
-                    } else {
-                        t.classList.add('a');
-                        if(!k.classList.contains('key-correct') && !k.classList.contains('key-present')) k.classList.add('key-absent');
-                    }
-                }
-                if(acertos === 5) { fimGrids[g] = true; document.getElementById(`grid-${g}`).classList.add('done'); }
             }
-            if(fimGrids.every(x => x)) { showToast("VOCÊ VENCEU! 🏆"); setTimeout(novoJogo, 3000); }
+            for(let i=0; i<5; i++) {
+                let t = document.getElementById("t"+(row*5+i));
+                if(t.classList.contains("c")) continue;
+                if(tempR.includes(s[i])) {
+                    t.classList.add("p"); tempR[tempR.indexOf(s[i])] = null;
+                } else { t.classList.add("a"); }
+            }
+            if(acertos === 5) { showToast("🏆 VOCÊ VENCEU!"); fim = true; setTimeout(novoJogo, 4000); }
             else {
                 row++; col = 0; chute = ["", "", "", "", ""];
-                if(row === maxTents) { showToast("FIM! RESPOSTA: " + RESPOSTAS.join(" | ")); setTimeout(novoJogo, 4000); }
+                if(row === 6) { showToast("RESPOSTA: " + resposta); fim = true; setTimeout(novoJogo, 5000); }
             }
-            updateUI();
         }
 
         function updateUI() {
             document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
-            for(let g=0; g<totalGrids; g++) {
-                if(!fimGrids[g] && row < maxTents) document.getElementById(`g${g}-t${row*5+col}`).classList.add('selected');
-            }
+            if(!fim) document.getElementById("t"+(row*5+col)).classList.add('selected');
         }
 
         function showToast(m) {

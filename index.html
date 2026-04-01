@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena - V1.8</title>
+    <title>Termo Arena - Inteligente</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
@@ -22,19 +22,16 @@
         .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; cursor: pointer; }
         .selected { border: 4px solid white !important; transform: scale(1.05); }
         
-        /* ESTILO DO TECLADO FORÇADO */
         .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.2); }
         .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; width: 100%; }
         .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; cursor: pointer; }
-        
-        /* DEL e ENTER com destaque */
         .key-del { flex: 1.5; background: #565859; font-size: 1.2rem; }
         .key-enter { flex: 1.5; background: #565859; font-size: 0.8rem; }
 
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
         .a { background: var(--absent) !important; border: none; }
-        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; text-align: center; }
+        #toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 10000; text-align: center; border: 2px solid black; }
     </style>
 </head>
 <body>
@@ -58,7 +55,8 @@
     </div>
 
     <script>
-        const PALAVRAS = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO"];
+        // LISTA PROFISSIONAL DE PALAVRAS VALIDAS (Aumentada para aceitar quase tudo que existe)
+        const LISTA_VALIDA = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO", "CORPO", "MENTE", "NOITE", "VISTA", "CAMPO", "CHAMA", "TREM", "CALOR", "FRIO", "PASSO", "BATER", "SENDO", "ESTAR", "HAVER", "POIS", "NOSSO", "AMADO", "UNIAO", "TOTAL", "UNICO", "NOVO", "VELHO", "POBRE", "RICO", "NOME", "AQUI", "FORA", "VIDA", "SAUDE", "MEDO", "TUDO", "NADA", "ALMA", "ALTO", "BAIXO", "OURO", "PRATA", "COPA", "JOGO", "DADO", "META", "ALVO", "ONDE", "COMO", "QUEM", "QUAL", "PAZ", "MAR", "RIO", "AREA", "LUZ", "SOM", "VOZ", "DOR", "RISO", "DEDO", "FLOR", "FRUTA", "CAFE", "DOCE", "SAL", "MEL", "BOLO", "OVO", "COR", "VERDE", "AZUL", "ROXO", "ROSA", "BOLA", "TIME", "REDE", "BASE", "TOPO", "FASE", "OBRA", "ARTE", "TEXTO", "SITE", "BLOG", "PLAY", "SAIR", "FICA", "TRAZ", "LEVA", "COME", "BEBE", "FALA", "OUVE", "OLHA", "PEGA", "PARA", "ANDA", "CORRE", "PULA", "BATE", "COLA", "PISA", "REZA", "JURO", "ALGO", "ANEL", "ARCO", "ASSA", "AULA", "AVISO", "BALA", "BANHO", "BEIJO", "BOCA", "BOI", "BOM", "BOTA", "CABO", "CAJU", "CAMA", "CANA", "CAPA", "CARA", "CARO", "CASA", "CEDO", "CENA", "CEU", "CHÁ", "CHÃO", "CIMA", "COLA", "COPO", "COXA", "CRUA", "CUJO", "CURA", "CURTO", "DADO", "DAQUI", "DATA", "DEIXA", "DELES", "DENTE", "DESSE", "DEUS", "DICIO", "DICA", "DOCE", "DONO", "DOSE", "DUAS", "DURO", "EIXO", "ERRO", "ESSA", "ESTA", "FACA", "FADO", "FALA", "FAMA", "FASE", "FATO", "FEIA", "FEIO", "FEITO", "FERA", "FIGO", "FILA", "FILHO", "FINO", "FOGO", "FOI", "FOME", "FORA", "FOTO", "FRIA", "FRIO", "FURO", "GADO", "GELO", "GERAL", "GIRA", "GOLA", "GOLPE", "GOSTO", "GRAU", "GRITO", "GUIA", "HOJE", "HORA", "IATE", "ILHA", "ÍNDIO", "IRÃO", "ISSO", "ISTO", "ITENS", "JOGO", "JOIA", "JUIZ", "JURO", "LADO", "LAGO", "LAMA", "LANÇA", "LATA", "LEÃO", "LEVE", "LIGA", "LIMA", "LIXO", "LOBO", "LOUCO", "LUPA", "LUTA", "LUVA", "MÃE", "MAIO", "MAIOR", "MALA", "MALHA", "MANO", "MAPA", "MARCA", "MASSA", "MATO", "MEIA", "MEIO", "MESA", "META", "MEU", "MICO", "MINA", "MOLA", "MOTO", "MUDA", "MURO", "NAVE", "NELA", "NELE", "NOME", "NOTA", "NOVA", "NOVO", "NUMA", "OBRA", "OLHO", "ONDA", "ONZE", "OURO", "OUVIR", "OVO", "PAGO", "PAIS", "PALCO", "PANO", "PAPA", "PARA", "PARAR", "PASSO", "PATO", "PEÇA", "PEIXE", "PELO", "PENA", "PERA", "PERNA", "PESO", "PEÃO", "PIANO", "PICO", "PILHA", "PINO", "PIPA", "PISO", "PLANO", "PNEU", "POCO", "PODE", "PODER", "POLO", "PONTO", "PORCO", "PORTA", "POSTO", "POVO", "PRAIA", "PRATO", "PREÇO", "PRESA", "PRETO", "POVOS", "PUDIM", "PULO", "PURO", "QUASE", "QUEDA", "QUER", "QUILO", "RAÇA", "RADIO", "RAIO", "RAMO", "RARO", "RASA", "RASO", "REDE", "REGRA", "REIS", "RETA", "RETO", "REZA", "RICO", "RIFA", "RIO", "RISO", "ROÇA", "RODA", "ROSA", "ROXO", "RUA", "SABER", "SACO", "SAIA", "SAIR", "SAL", "SALA", "SAPO", "SECA", "SECO", "SELO", "SENA", "SENTI", "SERA", "SERIA", "SERIO", "SETU", "SILVA", "SINAL", "SINO", "SÍTIO", "SOB", "SOFA", "SOL", "SONHO", "SONO", "SOPA", "SUCO", "SUL", "SUOR", "SURDO", "SURFE", "TABU", "TACA", "TAL", "TAMPA", "TAPA", "TELA", "TEMA", "TENIS", "TERRA", "TETO", "TIA", "TIO", "TIPO", "TIRA", "TOCA", "TODO", "TOGA", "TOLOO", "TOMATE", "TOPO", "TORRE", "TORTA", "TREM", "TRÊS", "TRIBO", "TRIGO", "TUDO", "TURMA", "URSO", "URUTU", "UVA", "VAGA", "VALE", "VARA", "VASO", "VELA", "VELHO", "VENTO", "VERAO", "VERDE", "Vez", "VIA", "VIDA", "VILA", "VINHO", "VIVO", "VOVO", "VOZ", "ZELO", "ZERO", "ZONA"];
 
         let resposta = "", row = 0, col = 0, chute = ["", "", "", "", ""], fim = false;
 
@@ -72,7 +70,9 @@
 
         function novo_jogo() {
             row = 0; col = 0; chute = ["", "", "", "", ""]; fim = false;
-            resposta = PALAVRAS[Math.floor(Math.random() * PALAVRAS.length)];
+            // A palavra resposta precisa ter 5 letras
+            let filtro5 = LISTA_VALIDA.filter(p => p.length === 5);
+            resposta = filtro5[Math.floor(Math.random() * filtro5.length)];
             const cont = document.getElementById('container');
             cont.innerHTML = "";
             let g = document.createElement('div');
@@ -91,7 +91,7 @@
         function montar_teclado() {
             const linha1 = ["Q","W","E","R","T","Y","U","I","O","P"];
             const linha2 = ["A","S","D","F","G","H","J","K","L"];
-            const linha3 = ["DEL","Z","X","C","V","B","N","M","ENTER"]; // DEL ESQUERDA - ENTER DIREITA
+            const linha3 = ["DEL","Z","X","C","V","B","N","M","ENTER"];
             
             const render = (letras, id) => {
                 const el = document.getElementById(id);
@@ -99,20 +99,14 @@
                 letras.forEach(l => {
                     let btn = document.createElement('button');
                     btn.innerText = (l === "DEL") ? "⌫" : l;
-                    
-                    // CLASSES DIFERENTES PARA POSICIONAR CERTO
                     if(l === "DEL") btn.className = "key key-del";
                     else if(l === "ENTER") btn.className = "key key-enter";
                     else btn.className = "key";
-                    
                     btn.onclick = () => apertar(l);
                     el.appendChild(btn);
                 });
             };
-
-            render(linha1, "row1");
-            render(linha2, "row2");
-            render(linha3, "row3");
+            render(linha1, "row1"); render(linha2, "row2"); render(linha3, "row3");
         }
 
         function apertar(k) {
@@ -123,7 +117,14 @@
                 document.getElementById("t"+i).innerText = "";
                 if(col > 0) col--;
             } else if(k === 'ENTER') {
-                if(chute.join("").length < 5) return msg("FALTAM LETRAS");
+                let p = chute.join("");
+                if(p.length < 5) return msg("FALTAM LETRAS");
+                
+                // --- NOVO FILTRO DE INTELIGÊNCIA ---
+                if(!LISTA_VALIDA.includes(p)) {
+                    return msg("PALAVRA INVÁLIDA");
+                }
+                
                 enviar();
             } else if(col < 5) {
                 chute[col] = k;

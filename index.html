@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termo Arena - Teclado Invertido</title>
+    <title>Termo Arena - V1.8</title>
     <style>
         :root { --bg: #6e5c62; --tile: #615458; --correct: #3aa394; --present: #d3ad69; --absent: #312a2c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; touch-action: manipulation; }
@@ -12,7 +12,7 @@
         #login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .card { background: #4a3f43; padding: 30px; border-radius: 15px; width: 100%; max-width: 320px; text-align: center; }
         input { background: #312a2c; border: 2px solid #555; color: white; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 1.2rem; text-transform: uppercase; }
-        .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-entrar { background: var(--correct); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
         header { width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.1); }
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 5px; }
@@ -22,11 +22,14 @@
         .tile { background: var(--tile); border: 2px solid #75666a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; border-radius: 4px; aspect-ratio: 1/1; width: clamp(45px, 12vw, 60px); text-transform: uppercase; cursor: pointer; }
         .selected { border: 4px solid white !important; transform: scale(1.05); }
         
+        /* ESTILO DO TECLADO FORÇADO */
         .keyboard { width: 100%; padding: 10px 5px 30px; background: rgba(0,0,0,0.2); }
-        .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; }
-        .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; cursor: pointer; text-transform: uppercase; }
+        .kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; width: 100%; }
+        .key { background: #818384; border: none; color: white; padding: 20px 0; border-radius: 4px; font-weight: bold; font-size: 1rem; flex: 1; text-align: center; cursor: pointer; }
         
-        .key-special { flex: 1.5; background: #565859; font-size: 0.8rem; }
+        /* DEL e ENTER com destaque */
+        .key-del { flex: 1.5; background: #565859; font-size: 1.2rem; }
+        .key-enter { flex: 1.5; background: #565859; font-size: 0.8rem; }
 
         .c { background: var(--correct) !important; border: none; }
         .p { background: var(--present) !important; border: none; }
@@ -55,7 +58,7 @@
     </div>
 
     <script>
-        const RESPOSTAS_POSSIVEIS = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO"];
+        const PALAVRAS = ["AREIA", "MESAS", "CASAS", "GATOS", "LIVRO", "PRATO", "TERMO", "SAGAZ", "NOBRE", "MEXER", "AFETO", "ARENA", "SORTE", "VALOR", "VIVER", "PORTA", "FESTA", "BRASIL", "PEDRA", "MUNDO", "TEMPO", "FORTE", "LETRA", "BOLSA", "LUCRO", "JUROS", "RENDA", "CAIXA", "COFRE", "BANCO", "ATIVO", "PLANO", "SONHO", "AGUA", "FOGO", "TERRA", "VENTO"];
 
         let resposta = "", row = 0, col = 0, chute = ["", "", "", "", ""], fim = false;
 
@@ -64,12 +67,12 @@
             document.getElementById('login').style.display = 'none';
             document.getElementById('h-game').style.display = 'block';
             document.getElementById('kb-game').style.display = 'block';
-            novoJogo();
+            novo_jogo();
         }
 
-        function novoJogo() {
+        function novo_jogo() {
             row = 0; col = 0; chute = ["", "", "", "", ""]; fim = false;
-            resposta = RESPOSTAS_POSSIVEIS[Math.floor(Math.random() * RESPOSTAS_POSSIVEIS.length)];
+            resposta = PALAVRAS[Math.floor(Math.random() * PALAVRAS.length)];
             const cont = document.getElementById('container');
             cont.innerHTML = "";
             let g = document.createElement('div');
@@ -78,81 +81,86 @@
             for(let i=0; i<30; i++) {
                 let t = document.createElement('div');
                 t.className = "tile"; t.id = "t"+i;
-                t.onclick = () => { if(!fim && Math.floor(i/5) === row) { col = i%5; updateUI(); } };
+                t.onclick = () => { if(!fim && Math.floor(i/5) === row) { col = i%5; att_tela(); } };
                 g.appendChild(t);
             }
             cont.appendChild(g);
-            montarTeclado(); updateUI();
+            montar_teclado(); att_tela();
         }
 
-        function montarTeclado() {
-            const r1 = ["Q","W","E","R","T","Y","U","I","O","P"];
-            const r2 = ["A","S","D","F","G","H","J","K","L"];
-            // AQUI ESTÁ A INVERSÃO: DEL NA ESQUERDA, LETRAS NO MEIO, ENTER NA DIREITA
-            const r3 = ["DEL","Z","X","C","V","B","N","M","ENTER"];
+        function montar_teclado() {
+            const linha1 = ["Q","W","E","R","T","Y","U","I","O","P"];
+            const linha2 = ["A","S","D","F","G","H","J","K","L"];
+            const linha3 = ["DEL","Z","X","C","V","B","N","M","ENTER"]; // DEL ESQUERDA - ENTER DIREITA
             
-            const rows = [r1, r2, r3];
-            rows.forEach((rowArr, idx) => {
-                const rowEl = document.getElementById('row'+(idx+1));
-                rowEl.innerHTML = "";
-                rowArr.forEach(k => {
-                    let b = document.createElement('button');
-                    b.innerText = k === "DEL" ? "⌫" : k;
-                    b.className = (k === "DEL" || k === "ENTER") ? "key key-special" : "key";
-                    b.onclick = () => clicarTecla(k);
-                    rowEl.appendChild(b);
+            const render = (letras, id) => {
+                const el = document.getElementById(id);
+                el.innerHTML = "";
+                letras.forEach(l => {
+                    let btn = document.createElement('button');
+                    btn.innerText = (l === "DEL") ? "⌫" : l;
+                    
+                    // CLASSES DIFERENTES PARA POSICIONAR CERTO
+                    if(l === "DEL") btn.className = "key key-del";
+                    else if(l === "ENTER") btn.className = "key key-enter";
+                    else btn.className = "key";
+                    
+                    btn.onclick = () => apertar(l);
+                    el.appendChild(btn);
                 });
-            });
+            };
+
+            render(linha1, "row1");
+            render(linha2, "row2");
+            render(linha3, "row3");
         }
 
-        function clicarTecla(k) {
+        function apertar(k) {
             if(fim) return;
-            let idx = row * 5 + col;
+            let i = row * 5 + col;
             if(k === 'DEL') {
                 chute[col] = "";
-                document.getElementById("t"+idx).innerText = "";
+                document.getElementById("t"+i).innerText = "";
                 if(col > 0) col--;
             } else if(k === 'ENTER') {
-                let p = chute.join("");
-                if(p.length < 5) return showToast("FALTAM LETRAS");
-                processarEnvio();
+                if(chute.join("").length < 5) return msg("FALTAM LETRAS");
+                enviar();
             } else if(col < 5) {
                 chute[col] = k;
-                document.getElementById("t"+idx).innerText = k;
+                document.getElementById("t"+i).innerText = k;
                 if(col < 4) col++;
             }
-            updateUI();
+            att_tela();
         }
 
-        function processarEnvio() {
-            let s = chute.join(""), r = resposta, tempR = r.split(""), acertos = 0;
+        function enviar() {
+            let s = chute.join(""), r = resposta, tr = r.split(""), ok = 0;
             for(let i=0; i<5; i++) {
                 let t = document.getElementById("t"+(row*5+i));
-                if(s[i] === r[i]) { t.classList.add("c"); tempR[i] = null; acertos++; }
+                if(s[i] === r[i]) { t.classList.add("c"); tr[i] = null; ok++; }
             }
             for(let i=0; i<5; i++) {
                 let t = document.getElementById("t"+(row*5+i));
                 if(t.classList.contains("c")) continue;
-                if(tempR.includes(s[i])) {
-                    t.classList.add("p"); tempR[tempR.indexOf(s[i])] = null;
-                } else { t.classList.add("a"); }
+                if(tr.includes(s[i])) { t.classList.add("p"); tr[tr.indexOf(s[i])] = null; }
+                else { t.classList.add("a"); }
             }
-            if(acertos === 5) { showToast("🏆 VENCEU!"); fim = true; setTimeout(novoJogo, 4000); }
+            if(ok === 5) { msg("🏆 VENCEU!"); fim = true; setTimeout(novo_jogo, 4000); }
             else {
                 row++; col = 0; chute = ["", "", "", "", ""];
-                if(row === 6) { showToast("RESPOSTA: " + resposta); fim = true; setTimeout(novoJogo, 5000); }
+                if(row === 6) { msg("RESPOSTA: " + resposta); fim = true; setTimeout(novo_jogo, 5000); }
             }
         }
 
-        function updateUI() {
+        function att_tela() {
             document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
             if(!fim) {
-                const target = document.getElementById("t"+(row*5+col));
-                if(target) target.classList.add('selected');
+                const el = document.getElementById("t"+(row*5+col));
+                if(el) el.classList.add('selected');
             }
         }
 
-        function showToast(m) {
+        function msg(m) {
             const t = document.getElementById('toast');
             t.innerText = m; t.style.display = 'block';
             setTimeout(() => t.style.display = 'none', 2000);
